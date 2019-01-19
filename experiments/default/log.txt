@@ -1,0 +1,414 @@
+============ Initialized logger ============
+dataset: aifb
+debug: False
+emb_dim: 50
+eval_every: 25
+exp_dir: ./experiments/default
+experiment_name: default
+gcn_layers: 2
+lr: 0.1
+momentum: 0.9
+nBatches: 200
+nEpochs: 1000
+optimizer: SGD
+patience: 10
+sample_size: 30
+save_every: 50
+============================================
+============ Initialized logger ============
+dataset: aifb
+debug: False
+emb_dim: 50
+eval_every: 25
+exp_dir: ./experiments/default
+experiment_name: default
+gcn_layers: 2
+lr: 0.1
+momentum: 0.9
+nBatches: 200
+nEpochs: 1000
+optimizer: SGD
+patience: 10
+sample_size: 30
+save_every: 50
+============================================
+============ Initialized logger ============
+dataset: aifb
+debug: False
+emb_dim: 50
+eval_every: 25
+exp_dir: ./experiments/default
+experiment_name: default
+gcn_layers: 2
+lr: 0.1
+momentum: 0.9
+nBatches: 200
+nEpochs: 1000
+optimizer: SGD
+patience: 10
+sample_size: 30
+save_every: 50
+============================================
+Loaded aifb dataset with 8285 entities and 91 relations
+No existing model found. Initializing new model..
+============ Initialized logger ============
+dataset: aifb
+debug: False
+emb_dim: 50
+eval_every: 25
+exp_dir: ./experiments/default
+experiment_name: default
+gcn_layers: 2
+lr: 0.1
+momentum: 0.9
+nBatches: 200
+nEpochs: 1000
+n_class: 4
+optimizer: SGD
+patience: 10
+sample_size: 30
+save_every: 50
+============================================
+Loaded aifb dataset with 8285 entities and 91 relations
+No existing model found. Initializing new model..
+============ Initialized logger ============
+dataset: aifb
+debug: False
+emb_dim: 50
+eval_every: 25
+exp_dir: ./experiments/default
+experiment_name: default
+gcn_layers: 2
+lr: 0.1
+momentum: 0.9
+nBatches: 200
+nEpochs: 1000
+n_class: 4
+optimizer: SGD
+patience: 10
+sample_size: 30
+save_every: 50
+============================================
+Loaded aifb dataset with 8285 entities and 91 relations
+No existing model found. Initializing new model..
+============ Initialized logger ============
+dataset: aifb
+debug: False
+emb_dim: 50
+eval_every: 25
+exp_dir: ./experiments/default
+experiment_name: default
+gcn_layers: 2
+lr: 0.1
+momentum: 0.9
+nBatches: 200
+nEpochs: 1000
+n_class: 4
+optimizer: SGD
+patience: 10
+sample_size: 30
+save_every: 50
+============================================
+Loaded aifb dataset with 8285 entities and 91 relations
+No existing model found. Initializing new model..
+============ Initialized logger ============
+dataset: aifb
+debug: False
+emb_dim: 50
+eval_every: 25
+exp_dir: ./experiments/default
+experiment_name: default
+gcn_layers: 2
+lr: 0.1
+momentum: 0.9
+nBatches: 200
+nEpochs: 1000
+n_class: 4
+optimizer: SGD
+patience: 10
+sample_size: 30
+save_every: 50
+============================================
+Loaded aifb dataset with 8285 entities and 91 relations
+No existing model found. Initializing new model..
+============ Initialized logger ============
+dataset: aifb
+debug: False
+emb_dim: 50
+eval_every: 25
+exp_dir: ./experiments/default
+experiment_name: default
+gcn_layers: 2
+lr: 0.1
+momentum: 0.9
+nBatches: 200
+nEpochs: 1000
+n_class: 4
+optimizer: SGD
+patience: 10
+sample_size: 30
+save_every: 50
+============================================
+Loaded aifb dataset with 8285 entities and 91 relations
+No existing model found. Initializing new model..
+============ Initialized logger ============
+dataset: aifb
+debug: False
+emb_dim: 50
+eval_every: 25
+exp_dir: ./experiments/default
+experiment_name: default
+gcn_layers: 2
+lr: 0.1
+momentum: 0.9
+nBatches: 200
+nEpochs: 1000
+n_class: 4
+optimizer: SGD
+patience: 10
+sample_size: 30
+save_every: 50
+============================================
+Loaded aifb dataset with 8285 entities and 91 relations
+No existing model found. Initializing new model..
+============ Initialized logger ============
+dataset: aifb
+debug: False
+emb_dim: 50
+eval_every: 25
+exp_dir: ./experiments/default
+experiment_name: default
+gcn_layers: 2
+lr: 0.1
+momentum: 0.9
+nBatches: 200
+nEpochs: 1000
+n_class: 4
+optimizer: SGD
+patience: 10
+sample_size: 30
+save_every: 50
+============================================
+Loaded aifb dataset with 8285 entities and 91 relations
+No existing model found. Initializing new model..
+============ Initialized logger ============
+dataset: aifb
+debug: False
+emb_dim: 50
+eval_every: 25
+exp_dir: ./experiments/default
+experiment_name: default
+gcn_layers: 2
+lr: 0.1
+momentum: 0.9
+nBatches: 200
+nEpochs: 1000
+n_class: 4
+optimizer: SGD
+patience: 10
+sample_size: 30
+save_every: 50
+============================================
+Loaded aifb dataset with 8285 entities and 91 relations
+No existing model found. Initializing new model..
+============ Initialized logger ============
+dataset: aifb
+debug: False
+emb_dim: 50
+eval_every: 25
+exp_dir: ./experiments/default
+experiment_name: default
+gcn_layers: 2
+lr: 0.1
+momentum: 0.9
+nBatches: 200
+nEpochs: 1000
+n_class: 4
+optimizer: SGD
+patience: 10
+sample_size: 30
+save_every: 50
+============================================
+Loaded aifb dataset with 8285 entities and 91 relations
+No existing model found. Initializing new model..
+============ Initialized logger ============
+dataset: aifb
+debug: False
+emb_dim: 50
+eval_every: 25
+exp_dir: ./experiments/default
+experiment_name: default
+gcn_layers: 2
+lr: 0.1
+momentum: 0.9
+nBatches: 200
+nEpochs: 1000
+n_class: 4
+optimizer: SGD
+patience: 10
+sample_size: 30
+save_every: 50
+============================================
+Loaded aifb dataset with 8285 entities and 91 relations
+No existing model found. Initializing new model..
+============ Initialized logger ============
+dataset: aifb
+debug: False
+emb_dim: 50
+eval_every: 25
+exp_dir: ./experiments/default
+experiment_name: default
+gcn_layers: 2
+lr: 0.1
+momentum: 0.9
+nBatches: 200
+nEpochs: 1000
+n_class: 4
+optimizer: SGD
+patience: 10
+sample_size: 30
+save_every: 50
+============================================
+Loaded aifb dataset with 8285 entities and 91 relations
+No existing model found. Initializing new model..
+============ Initialized logger ============
+dataset: aifb
+debug: False
+emb_dim: 50
+eval_every: 25
+exp_dir: ./experiments/default
+experiment_name: default
+gcn_layers: 2
+lr: 0.1
+momentum: 0.9
+nBatches: 200
+nEpochs: 1000
+n_class: 4
+optimizer: SGD
+patience: 10
+sample_size: 30
+save_every: 50
+============================================
+Loaded aifb dataset with 8285 entities and 91 relations
+No existing model found. Initializing new model..
+============ Initialized logger ============
+dataset: aifb
+debug: False
+emb_dim: 50
+eval_every: 25
+exp_dir: ./experiments/default
+experiment_name: default
+gcn_layers: 2
+lr: 0.1
+momentum: 0.9
+nBatches: 200
+nEpochs: 1000
+n_class: 4
+optimizer: SGD
+patience: 10
+sample_size: 30
+save_every: 50
+============================================
+Loaded aifb dataset with 8285 entities and 91 relations
+No existing model found. Initializing new model..
+============ Initialized logger ============
+dataset: aifb
+debug: False
+emb_dim: 50
+eval_every: 25
+exp_dir: ./experiments/default
+experiment_name: default
+gcn_layers: 2
+lr: 0.1
+momentum: 0.9
+nBatches: 200
+nEpochs: 1000
+n_class: 4
+optimizer: SGD
+patience: 10
+sample_size: 30
+save_every: 50
+============================================
+Loaded aifb dataset with 8285 entities and 91 relations
+No existing model found. Initializing new model..
+============ Initialized logger ============
+dataset: aifb
+debug: False
+emb_dim: 50
+eval_every: 25
+exp_dir: ./experiments/default
+experiment_name: default
+gcn_layers: 2
+lr: 0.1
+momentum: 0.9
+nBatches: 200
+nEpochs: 1000
+n_class: 4
+optimizer: SGD
+patience: 10
+sample_size: 30
+save_every: 50
+============================================
+Loaded aifb dataset with 8285 entities and 91 relations
+No existing model found. Initializing new model..
+============ Initialized logger ============
+dataset: aifb
+debug: False
+emb_dim: 50
+eval_every: 25
+exp_dir: ./experiments/default
+experiment_name: default
+gcn_layers: 2
+lr: 0.1
+momentum: 0.9
+nBatches: 200
+nEpochs: 1000
+n_class: 4
+optimizer: SGD
+patience: 10
+sample_size: 30
+save_every: 50
+============================================
+Loaded aifb dataset with 8285 entities and 91 relations
+No existing model found. Initializing new model..
+============ Initialized logger ============
+dataset: aifb
+debug: False
+emb_dim: 50
+eval_every: 25
+exp_dir: ./experiments/default
+experiment_name: default
+gcn_layers: 2
+lr: 0.1
+momentum: 0.9
+nBatches: 200
+nEpochs: 1000
+n_class: 4
+optimizer: SGD
+patience: 10
+sample_size: 30
+save_every: 50
+============================================
+Loaded aifb dataset with 8285 entities and 91 relations
+No existing model found. Initializing new model..
+============ Initialized logger ============
+dataset: aifb
+debug: False
+emb_dim: 50
+eval_every: 25
+exp_dir: ./experiments/default
+experiment_name: default
+gcn_layers: 2
+lr: 0.1
+momentum: 0.9
+nBatches: 200
+nEpochs: 1000
+n_class: 4
+optimizer: SGD
+patience: 10
+sample_size: 30
+save_every: 50
+============================================
+Loaded aifb dataset with 8285 entities and 91 relations
+No existing model found. Initializing new model..
+Starting training with full batch
