@@ -342,3 +342,16 @@ class Logger(object):
         summary = tf.Summary(value=[tf.Summary.Value(tag=tag, histo=hist)])
         self.writer.add_summary(summary, step)
         self.writer.flush()
+
+
+def get_torch_sparse_matrix(A):
+    '''
+    A : list of sparse adjacency matrices
+    '''
+
+    idx = [np.array(list(zip(np.ones(len(a.tocoo().row), dtype=int) * i, a.tocoo().row, a.tocoo().col))) for i, a in enumerate(A) if len(a.tocoo().row) != 0]
+    dat = [np.array(a.tocoo().data) for a in A if len(a.tocoo().row) != 0]
+
+    i = torch.LongTensor(np.concatenate(idx, axis=0).T)
+    v = torch.FloatTensor(np.concatenate(dat, axis=0))
+    return torch.sparse.FloatTensor(i, v, torch.Size([len(A), A[0].shape[0], A[0].shape[0]]))

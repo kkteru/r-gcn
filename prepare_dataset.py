@@ -8,6 +8,8 @@ import sys
 import time
 import argparse
 
+from sklearn.preprocessing import normalize
+
 ap = argparse.ArgumentParser()
 ap.add_argument("-d", "--dataset", type=str, default="aifb",
                 help="Dataset string ('aifb', 'mutag', 'bgs', 'am')")
@@ -53,6 +55,7 @@ print("Done! Elapsed time " + str(time.time() - t))
 todel = list(set(range(num_nodes)) - set.union(set(lvls[0]), set(lvls[1])))
 for i in range(len(A)):
     csr_zero_rows(A[i], todel)
+    normalize(A[i], norm='l1', axis=1, copy=False)
 
 data = {'A': A,
         'y': y,

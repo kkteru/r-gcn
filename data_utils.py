@@ -11,6 +11,7 @@ import glob
 import pandas as pd
 import wget
 import pickle as pkl
+from sklearn.preprocessing import normalize
 
 from collections import Counter
 
@@ -262,7 +263,7 @@ def load_data(dataset_str='aifb', limit=-1):
 
                 row, col = np.transpose(edges)
 
-                data = np.ones(len(row), dtype=np.int8)
+                data = np.ones(len(row))
 
                 adj = sp.csr_matrix((data, (row, col)), shape=adj_shape,
                                     dtype=np.int8)

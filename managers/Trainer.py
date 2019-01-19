@@ -1,3 +1,4 @@
+import numpy as np
 import torch
 import torch.nn.functional as F
 import torch.optim as optim
@@ -24,7 +25,7 @@ class Trainer():
         train_idx = self.classifier_data['train_idx']  # (batch_size)
         y = self.classifier_data['y']  # y: (batch_size, n)
         adj_mat = self.classifier_data['A']
-        y = torch.max(y, dim=-1)  # y: (batch_size)
+        y = torch.LongTensor(np.array(np.argmax(y[train_idx], axis=-1)).squeeze())  # y: (batch_size)
 
         ent_emb = self.encoder(adj_mat)
         scores = self.classifier(ent_emb, train_idx)

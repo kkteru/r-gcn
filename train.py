@@ -17,7 +17,7 @@ parser.add_argument("--experiment_name", type=str, default="default",
 parser.add_argument("--dataset", type=str, default="aifb",
                     help="Dataset string ('aifb', 'mutag', 'bgs', 'am')")
 
-parser.add_argument("--nEpochs", type=int, default=1000,
+parser.add_argument("--nEpochs", type=int, default=10,
                     help="Learning rate of the optimizer")
 parser.add_argument("--nBatches", type=int, default=200,
                     help="Batch size")
@@ -57,6 +57,8 @@ with open(MAIN_DIR + '/' + params.dataset + '.pickle', 'rb') as f:
 params.total_rel = len(classifier_data['A'])
 params.total_ent = classifier_data['A'][0].shape[0]
 
+# classifier_data['A'] = get_torch_sparse_matrix(classifier_data['A'])
+
 logging.info('Loaded %s dataset with %d entities and %d relations' % (params.dataset, params.total_ent, params.total_rel))
 # train_data_sampler = DataSampler(TRAIN_DATA_PATH, params.debug)
 # valid_data_sampler = DataSampler(VALID_DATA_PATH)
@@ -79,15 +81,15 @@ logging.info('Starting training with full batch...')
 
 tb_logger = Logger(params.exp_dir)
 
-# for e in range(params.nEpochs):
-#     tic = time.time()
-#     loss = trainer.classifier_one_step()
-#     toc = time.time()
+for e in range(params.nEpochs):
+    tic = time.time()
+    loss = trainer.classifier_one_step()
+    toc = time.time()
 
-#     tb_logger.scalar_summary('loss', loss, e)
+    tb_logger.scalar_summary('loss', loss, e)
 
-#     logging.info('Epoch %d with loss: %f in %f'
-#                  % (e, loss, toc - tic))
+    logging.info('Epoch %d with loss: %f in %f'
+                 % (e, loss, toc - tic))
 #===========================================================#
 # if (e + 1) % params.eval_every == 0:
 #     log_data = evaluator.get_log_data()
