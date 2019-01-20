@@ -1,4 +1,4 @@
-from __future__ import print_function
+# Code referred from https://github.com/tkipf/relational-gcn/blob/master/rgcn/prepare_dataset.py
 
 import os
 import re

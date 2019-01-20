@@ -1,3 +1,5 @@
+# Code referred from https://github.com/tkipf/relational-gcn/blob/master/rgcn/prepare_dataset.py
+
 from data_utils import load_data
 from utils import *
 
