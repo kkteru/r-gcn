@@ -11,7 +11,6 @@ import glob
 import pandas as pd
 import wget
 import pickle as pkl
-from sklearn.preprocessing import normalize
 
 from collections import Counter
 
@@ -165,8 +164,10 @@ def load_data(dataset_str='aifb', limit=-1):
     adj_fprepend = 'data/' + dataset_str + '/adjacencies_'
     labels_file = 'data/' + dataset_str + '/labels.npz'
     train_idx_file = 'data/' + dataset_str + '/train_idx.npy'
+    valid_idx_file = 'data/' + dataset_str + '/valid_idx.npy'
     test_idx_file = 'data/' + dataset_str + '/test_idx.npy'
     train_names_file = 'data/' + dataset_str + '/train_names.npy'
+    valid_names_file = 'data/' + dataset_str + '/valid_names.npy'
     test_names_file = 'data/' + dataset_str + '/test_names.npy'
     rel_dict_file = 'data/' + dataset_str + '/rel_dict.pkl'
     nodes_file = 'data/' + dataset_str + '/nodes.pkl'
@@ -178,8 +179,10 @@ def load_data(dataset_str='aifb', limit=-1):
     adj_fprepend = dirname + '/' + adj_fprepend
     labels_file = dirname + '/' + labels_file
     train_idx_file = dirname + '/' + train_idx_file
+    valid_idx_file = dirname + '/' + valid_idx_file
     test_idx_file = dirname + '/' + test_idx_file
     train_names_file = dirname + '/' + train_names_file
+    valid_names_file = dirname + '/' + valid_names_file
     test_names_file = dirname + '/' + test_names_file
     rel_dict_file = dirname + '/' + rel_dict_file
     nodes_file = dirname + '/' + nodes_file
@@ -209,8 +212,10 @@ def load_data(dataset_str='aifb', limit=-1):
         print('Number of classes: ', labels.shape[1])
 
         train_idx = np.load(train_idx_file)
+        valid_idx = np.load(valid_idx_file)
         test_idx = np.load(test_idx_file)
         train_names = np.load(train_names_file)
+        valid_names = np.load(valid_names_file)
         test_names = np.load(test_names_file)
 
         relations_dict = pkl.load(open(rel_dict_file, 'rb'))
@@ -317,6 +322,16 @@ def load_data(dataset_str='aifb', limit=-1):
             else:
                 print(u'Node not in dictionary, skipped: ',
                       nod.encode('utf-8', errors='replace'))
+        idx = np.random.random_integers(0, len(train_idx) - 1, 20)
+
+        print('Generating validation set from train set')
+
+        valid_idx = list(np.array(train_idx)[idx])
+        valid_names = list(np.array(train_names)[idx])
+
+        for i in idx:
+            del train_idx[i]
+            del train_names[i]
 
         print('Loading test set')
 
@@ -341,9 +356,11 @@ def load_data(dataset_str='aifb', limit=-1):
         save_sparse_csr(labels_file, labels)
 
         np.save(train_idx_file, train_idx)
+        np.save(valid_idx_file, valid_idx)
         np.save(test_idx_file, test_idx)
 
         np.save(train_names_file, train_names)
+        np.save(valid_names_file, valid_names)
         np.save(test_names_file, test_names)
 
         pkl.dump(relations_dict, open(rel_dict_file, 'wb'))
@@ -351,7 +368,7 @@ def load_data(dataset_str='aifb', limit=-1):
 
     features = sp.identity(adj_shape[0], format='csr')
 
-    return adjacencies, features, labels, labeled_nodes_idx, train_idx, test_idx, relations_dict, train_names, test_names
+    return adjacencies, features, labels, labeled_nodes_idx, train_idx, valid_idx, test_idx, relations_dict, train_names, valid_names, test_names
 
 
 def parse(symbol):

@@ -271,11 +271,17 @@ def initialize_experiment(params):
 
 def initialize_model(params):
 
-    if os.path.exists(os.path.join(params.exp_dir, 'best_model.pth')):
-        logging.info('Loading existing model from %s' % os.path.join(params.exp_dir, 'best_model.pth'))
-        gcn = torch.load(os.path.join(params.exp_dir, 'best_model.pth'))  # Update these
-        distmul = torch.load(os.path.join(params.exp_dir, 'best_model.pth'))  # Update these
-        sm_classifier = torch.load(os.path.join(params.exp_dir, 'best_model.pth'))  # Update these
+    if os.path.exists(os.path.join(params.exp_dir, 'best_gcn.pth')):
+        logging.info('Loading existing model from %s' % os.path.join(params.exp_dir, 'best_gcn.pth'))
+        gcn = torch.load(os.path.join(params.exp_dir, 'best_gcn.pth'))  # Update these
+        distmul = None
+        sm_classifier = None
+        if os.path.exists(os.path.join(params.exp_dir, 'best_distmul.pth')):
+            logging.info('Loading existing model from %s' % os.path.join(params.exp_dir, 'best_distmul.pth'))
+            distmul = torch.load(os.path.join(params.exp_dir, 'best_distmul.pth'))  # Update these
+        if os.path.exists(os.path.join(params.exp_dir, 'best_classifier.pth')):
+            logging.info('Loading existing model from %s' % os.path.join(params.exp_dir, 'best_classifier.pth'))
+            sm_classifier = torch.load(os.path.join(params.exp_dir, 'best_classifier.pth'))  # Update these
     else:
         logging.info('No existing model found. Initializing new model..')
         gcn = GCN(params)
