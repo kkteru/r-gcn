@@ -20,9 +20,9 @@ parser.add_argument("--nEpochs", type=int, default=10,
                     help="Learning rate of the optimizer")
 parser.add_argument("--nBatches", type=int, default=200,
                     help="Batch size")
-parser.add_argument("--eval_every", type=int, default=25,
+parser.add_argument("--eval_every", type=int, default=1,
                     help="Interval of epochs to evaluate the model?")
-parser.add_argument("--save_every", type=int, default=50,
+parser.add_argument("--save_every", type=int, default=2,
                     help="Interval of epochs to save a checkpoint of the model?")
 
 parser.add_argument("--sample_size", type=int, default=30,
@@ -70,7 +70,7 @@ gcn, distmul, _ = initialize_model(params)
 #     print(type(m_param.data), m_param.size())
 
 trainer = Trainer(params, gcn, distmul, None, None, link_train_data_sampler)
-# evaluator = Evaluator(transE, valid_data_sampler, params.sample_size)
+evaluator = Evaluator(gcn, distmul, None, None, link_valid_data_sampler, params.sample_size)
 
 batch_size = int(len(link_train_data_sampler.data) / params.nBatches)
 
@@ -81,9 +81,9 @@ tb_logger = Logger(params.exp_dir)
 for e in range(params.nEpochs):
     tic = time.time()
     # loss = trainer.classifier_one_step()
-    for b in range(params.nBatches):
-        loss = trainer.link_pred_one_step(batch_size)
-        print('doing batch %d - loss = %f' % (b, loss))
+    # for b in range(params.nBatches):
+    loss = trainer.link_pred_one_step(batch_size)
+    # print('doing batch %d - loss = %f' % (b, loss))
     toc = time.time()
 
     tb_logger.scalar_summary('loss', loss, e)
@@ -91,13 +91,13 @@ for e in range(params.nEpochs):
     logging.info('Epoch %d with loss: %f in %f'
                  % (e, loss, toc - tic))
     if (e + 1) % params.eval_every == 0:
-        log_data = evaluator.classifier_log_data()
+        log_data = evaluator.link_log_data()
         logging.info('Performance:' + str(log_data))
 
         for tag, value in log_data.items():
             tb_logger.scalar_summary(tag, value, e + 1)
 
-        to_continue = trainer.save_classifier(log_data)
+        to_continue = trainer.save_link_predictor(log_data)
         if not to_continue:
             break
     if (e + 1) % params.save_every == 0:

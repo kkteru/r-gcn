@@ -25,8 +25,6 @@ parser.add_argument("--save_every", type=int, default=5,
 parser.add_argument("--patience", type=int, default=10,
                     help="Early stopping patience")
 
-parser.add_argument("--sample_size", type=int, default=30,
-                    help="No. of negative samples to compare to for MRR/MR/Hit@10")
 parser.add_argument("--optimizer", type=str, default="SGD",
                     help="Which optimizer to use?")
 parser.add_argument("--lr", type=float, default=0.1,
@@ -61,7 +59,7 @@ logging.info('Loaded %s dataset with %d entities and %d relations' % (params.dat
 gcn, _, sm_classifier = initialize_model(params)
 
 trainer = Trainer(params, gcn, None, sm_classifier, classifier_data, None)
-evaluator = Evaluator(gcn, None, sm_classifier, classifier_data)
+evaluator = Evaluator(gcn, None, sm_classifier, classifier_data, None, None)
 
 logging.info('Starting training with full batch...')
 

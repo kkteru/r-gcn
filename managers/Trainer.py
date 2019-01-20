@@ -39,7 +39,7 @@ class Trainer():
 
         self.optimizer.zero_grad()
         loss.backward()
-        nn.utils.clip_grad_norm(self.model_params, self.params.clip)
+        nn.utils.clip_grad_norm_(self.model_params, self.params.clip)
         self.optimizer.step()
 
         return loss
@@ -63,7 +63,7 @@ class Trainer():
         # print('Loss calculates')
         self.optimizer.zero_grad()
         loss.backward()
-        nn.utils.clip_grad_norm(self.model_params, self.params.clip)
+        nn.utils.clip_grad_norm_(self.model_params, self.params.clip)
         self.optimizer.step()
 
         return loss
@@ -80,7 +80,7 @@ class Trainer():
         else:
             self.bad_count = self.bad_count + 1
             if self.bad_count > self.params.patience:
-                logging.info('Out of patience. Stopping the training loop.')
+                logging.info('Darn it! I dont have any more patience to give this model.')
                 return False
         self.last_metric = log_data['mrr']
         return True
