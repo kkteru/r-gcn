@@ -1,5 +1,6 @@
 import logging
 import numpy as np
+import scipy.sparse as sp
 
 
 class DataSampler():
@@ -10,8 +11,18 @@ class DataSampler():
 
         assert self.data.shape[1] == 3
 
-        self.ent = self.get_ent(self.data)  # Fill this
-        self.rel = self.get_rel(self.data)  # Fill this
+        r = 237
+        e = 14541
+        self.adj_mat = []
+        for i in range(r):
+            idx = np.argwhere(self.data[:, 2] == 0)
+            adj = sp.csr_matrix((np.ones(len(idx)) / len(idx), (self.data[:, 0][idx].squeeze(), self.data[:, 1][idx].squeeze())), shape=(e, e), dtype=np.int8)
+            self.adj_mat.append(adj)
+            self.adj_mat.append(adj.T)
+        self.adj_mat.append(sp.identity(self.adj_mat[0].shape[0]).tocsr())  # add identity matrix
+
+        self.ent = self.get_ent(self.data)
+        self.rel = self.get_rel(self.data)
 
         logging.info('Loaded data sucessfully from %s. Samples = %d; Total entities = %d; Total relations = %d' % (file_path, len(self.data), len(self.ent), len(self.rel)))
 

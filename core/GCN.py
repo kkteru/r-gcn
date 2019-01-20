@@ -20,7 +20,9 @@ class GCN(nn.Module):
         '''
         emb_acc = torch.empty(self.params.total_rel, self.params.total_ent, self.params.emb_dim)  # (R + 1 X N X d)
         for l in range(self.n_layers):
+            # print('in gcn; layer %d' % l)
             for i, mat in enumerate(adj_mat):
+                # print('doing adj %d' % i)
                 emb_acc[i] = torch.Tensor(mat.dot(self.ent_emb.detach().numpy()))
             tmp = torch.matmul(self.rel_trans, emb_acc.transpose(1, 2)).transpose(1, 2)  # (R + 1 X N X d)
             self.ent_emb = F.relu(torch.mean(tmp, dim=0))  # (N x d)

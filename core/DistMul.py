@@ -15,11 +15,12 @@ class DistMul(nn.Module):
         batch_t : (batch_size)
         ent_emb : (N, d)
         '''
-        heads = ent_emb[batch_h]  # (batch_size, d)
-        tails = ent_emb[batch_t]  # (batch_size, d)
+        heads = ent_emb[batch_h].unsqueeze(-1)  # (batch_size, d)
+        tails = ent_emb[batch_t].unsqueeze(-1)  # (batch_size, d)
         rels = self.rel_emb[batch_r]  # (batch_size, d, d)
 
-        score = torch.sigmoid(torch.chain_matmul(heads, rels, tails.transpose(0, 1)))
+        print('calculating decoder scores...')
+        score = torch.sigmoid(torch.matmul(torch.matmul(heads.transpose(1, 2), rels), tails)).squeeze()
 
         return score
 

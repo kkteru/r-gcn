@@ -52,11 +52,11 @@ params = parser.parse_args()
 
 initialize_experiment(params)
 
-params.total_rel = len(classifier_data['A'])
-params.total_ent = classifier_data['A'][0].shape[0]
-
 link_train_data_sampler = DataSampler(TRAIN_DATA_PATH, params.debug)
 link_valid_data_sampler = DataSampler(VALID_DATA_PATH)
+
+params.total_rel = 475
+params.total_ent = 14541
 
 logging.info('Loaded %s dataset with %d entities and %d relations' % (params.dataset, params.total_ent, params.total_rel))
 
@@ -74,7 +74,7 @@ trainer = Trainer(params, gcn, distmul, None, None, link_train_data_sampler)
 
 batch_size = int(len(link_train_data_sampler.data) / params.nBatches)
 
-logging.info('Starting training with full batch...')
+logging.info('Starting training with batch size %d' % batch_size)
 
 tb_logger = Logger(params.exp_dir)
 
@@ -83,6 +83,7 @@ for e in range(params.nEpochs):
     # loss = trainer.classifier_one_step()
     for b in range(params.nBatches):
         loss = trainer.link_pred_one_step(batch_size)
+        print('doing batch %d - loss = %f' % (b, loss))
     toc = time.time()
 
     tb_logger.scalar_summary('loss', loss, e)

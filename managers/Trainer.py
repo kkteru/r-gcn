@@ -26,8 +26,6 @@ class Trainer():
         if params.optimizer == "SGD":
             self.optimizer = optim.SGD(self.model_params, lr=params.lr, momentum=params.momentum)
 
-        self.criterion = nn.BCELoss()
-
     def classifier_one_step(self):
         train_batch = self.classifier_data['train_idx']  # (batch_size)
         y = self.classifier_data['y']  # y: (batch_size, n)
@@ -51,17 +49,21 @@ class Trainer():
         batch_size: scalar value
         '''
         batch_h, batch_t, batch_r = self.link_data_sampler.get_batch(batch_size)
-        adj_mat = self.link_data_sampler.adj_mat  # GET THIS!
+        adj_mat = self.link_data_sampler.adj_mat
 
         ent_emb = self.encoder(adj_mat)
+        # print('done with encoding')
         score = self.decoder(batch_h, batch_t, batch_r, ent_emb)
+        # print('done with decoding')
 
         y = torch.ones(len(score))
         y[int(len(score) / 2): len(score)] = 0
 
-        loss = self.criterion(score, y)
+        loss = F.binary_cross_entropy(score, y)
+        # print('Loss calculates')
         self.optimizer.zero_grad()
         loss.backward()
+        nn.utils.clip_grad_norm(self.model_params, self.params.clip)
         self.optimizer.step()
 
         return loss
