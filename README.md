@@ -12,4 +12,4 @@ PyToch implementation of R-GCN model for node classification and link prediction
 
 - [ ] Tune performance of both models
 
-Rquireemeents: rdflib, wget, scipy, sklearn
+Requirements: rdflib, wget, scipy, sklearn
