@@ -27,7 +27,7 @@ NUM_GC_LAYERS = 2  # Number of graph convolutional layers
 
 # Get data
 A, X, y, labeled_nodes_idx, train_idx, valid_idx, test_idx, rel_dict, train_names, valid_names, test_names = load_data(
-    DATASET, limit=1)
+    DATASET)
 
 rel_list = list(range(len(A)))
 for key, value in rel_dict.items():
