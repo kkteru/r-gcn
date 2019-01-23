@@ -59,7 +59,7 @@ class Trainer():
         y = torch.ones(len(score))
         y[int(len(score) / 2): len(score)] = 0
 
-        loss = F.binary_cross_entropy(score, y)
+        loss = F.binary_cross_entropy(score, y, reduction='sum')
         # print('Loss calculates')
         self.optimizer.zero_grad()
         loss.backward()
