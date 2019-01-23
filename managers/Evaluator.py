@@ -28,7 +28,7 @@ class Evaluator():
 
         heads = self.encoder.ent_emb[head_ids]  # (sample_size, d)
         tails = self.encoder.ent_emb[[sample[1]] * len(head_ids)]  # (sample_size, d)
-        rels = self.encoder.rel_trans[[sample[2]] * len(head_ids)]  # (sample_size, d, d)
+        rels = self.decoder.rel_emb[[sample[2]] * len(head_ids)]  # (sample_size, d, d)
 
         # print(heads.shape, tails.shape, rels.shape)
 

@@ -6,7 +6,7 @@ class DistMul(nn.Module):
     def __init__(self, params):
         super(DistMul, self).__init__()
         self.params = params
-        self.rel_emb = nn.Parameter(torch.rand((self.params.total_rel - 1) // 2, self.params.emb_dim), requires_grad=True)  # (R_, d, d) R_ is just the relations without the direction and self connection
+        self.rel_emb = nn.Parameter(torch.rand((self.params.total_rel - 1) // 2, self.params.emb_dim), requires_grad=True)  # (R_, d) R_ is just the relations without the direction and self connection
 
     def get_score(self, heads, tails, rels):
         '''
