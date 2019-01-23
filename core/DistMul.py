@@ -6,7 +6,7 @@ class DistMul(nn.Module):
     def __init__(self, params):
         super(DistMul, self).__init__()
         self.params = params
-        self.rel_emb = nn.Parameter(torch.diag_embed(torch.rand(self.params.total_rel, self.params.emb_dim, requires_grad=True)))  # (R, d, d)
+        self.rel_emb = nn.Parameter(torch.diag_embed(torch.rand(self.params.total_rel, self.params.emb_dim)), requires_grad=True)  # (R, d, d)
 
     def get_score(self, heads, tails, rels):
         '''

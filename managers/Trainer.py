@@ -66,6 +66,8 @@ class Trainer():
         nn.utils.clip_grad_norm_(self.model_params, self.params.clip)
         self.optimizer.step()
 
+        print(self.decoder.rel_emb)
+
         return loss
 
     def save_link_predictor(self, log_data):
