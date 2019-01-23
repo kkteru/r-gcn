@@ -91,7 +91,7 @@ for e in range(params.nEpochs):
     torch.mean(link_pred_one_step.encoder.ent_emb)
 
     logging.info('Epoch %d with loss: %f and emb norm %f in %f'
-                 % (e, loss, torch.mean(link_pred_one_step.encoder.ent_emb), toc - tic))
+                 % (e, loss, torch.mean(evaluator.encoder.ent_emb), toc - tic))
     if (e + 1) % params.eval_every == 0:
         log_data = evaluator.link_log_data()
         logging.info('Performance:' + str(log_data))
