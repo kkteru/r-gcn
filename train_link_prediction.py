@@ -47,6 +47,8 @@ parser.add_argument("--n_class", type=int, default=4,
 
 parser.add_argument("--debug", type=bool_flag, default=False,
                     help="Run the code in debug mode?")
+parser.add_argument("--no_encoder", type=bool_flag, default=True,
+                    help="Run the code in debug mode?")
 
 params = parser.parse_args()
 
