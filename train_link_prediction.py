@@ -88,8 +88,6 @@ for e in range(params.nEpochs):
 
     tb_logger.scalar_summary('loss', loss, e)
 
-    torch.mean(link_pred_one_step.encoder.ent_emb)
-
     logging.info('Epoch %d with loss: %f and emb norm %f in %f'
                  % (e, loss, torch.mean(evaluator.encoder.ent_emb), toc - tic))
     if (e + 1) % params.eval_every == 0:
