@@ -6,7 +6,7 @@ class DistMul(nn.Module):
     def __init__(self, params):
         super(DistMul, self).__init__()
         self.params = params
-        self.rel_emb = nn.Parameter(torch.diag_embed(torch.rand((self.params.total_rel - 1) // 2, self.params.emb_dim)), requires_grad=True)  # (R, d, d)
+        self.rel_emb = nn.Parameter(torch.rand((self.params.total_rel - 1) // 2, self.params.emb_dim), requires_grad=True)  # (R_, d, d) R_ is just the relations without the direction and self connection
 
     def get_score(self, heads, tails, rels):
         '''
@@ -16,7 +16,7 @@ class DistMul(nn.Module):
         '''
 
         # print('calculating decoder scores...')
-        score = torch.sigmoid(torch.matmul(torch.matmul(heads.unsqueeze(-1).transpose(1, 2), rels), tails.unsqueeze(-1))).squeeze()
+        score = torch.sigmoid(torch.matmul(torch.matmul(heads.unsqueeze(-1).transpose(1, 2), torch.diag_embed(rels)), tails.unsqueeze(-1))).squeeze()
 
         return score
 
