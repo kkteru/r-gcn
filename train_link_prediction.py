@@ -82,10 +82,8 @@ tb_logger = Logger(params.exp_dir)
 
 for e in range(params.nEpochs):
     tic = time.time()
-    # loss = trainer.classifier_one_step()
     for b in range(params.nBatches):
         loss = trainer.link_pred_one_step(batch_size)
-    print('doing batch %d - loss = %f' % (b, loss))
     toc = time.time()
 
     tb_logger.scalar_summary('loss', loss, e)
