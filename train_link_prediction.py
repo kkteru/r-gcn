@@ -20,9 +20,9 @@ parser.add_argument("--nEpochs", type=int, default=10,
                     help="Learning rate of the optimizer")
 parser.add_argument("--nBatches", type=int, default=200,
                     help="Batch size")
-parser.add_argument("--eval_every", type=int, default=1,
+parser.add_argument("--eval_every", type=int, default=25,
                     help="Interval of epochs to evaluate the model?")
-parser.add_argument("--save_every", type=int, default=2,
+parser.add_argument("--save_every", type=int, default=50,
                     help="Interval of epochs to save a checkpoint of the model?")
 
 parser.add_argument("--sample_size", type=int, default=30,
