@@ -1,7 +1,6 @@
 import argparse
 import logging
 import time
-import pickle as pkl
 
 from core import *
 from managers import *
@@ -37,6 +36,8 @@ parser.add_argument("--momentum", type=float, default=0,
                     help="Momentum of the SGD optimizer")
 parser.add_argument("--clip", type=int, default=1000,
                     help="Interval of epochs to save a checkpoint of the model?")
+parser.add_argument("--margin", type=int, default=1,
+                    help="The margin between positive and negative samples in the max-margin loss")
 
 parser.add_argument("--emb_dim", type=int, default=50,
                     help="Entity embedding size")

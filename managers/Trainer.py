@@ -22,6 +22,8 @@ class Trainer():
         self.last_metric = 0
         self.bad_count = 0
 
+        self.criterion = nn.MarginRankingLoss(self.params.margin, reduction='sum')
+
         self.model_params = list(self.encoder.parameters()) + (list(self.decoder.parameters()) if decoder is not None else list(self.classifier.parameters()))
         if params.optimizer == "SGD":
             self.optimizer = optim.SGD(self.model_params, lr=params.lr, momentum=params.momentum)
@@ -56,10 +58,14 @@ class Trainer():
         score = self.decoder(batch_h, batch_t, batch_r, ent_emb)
         # print('done with decoding')
 
-        y = torch.ones(len(score))
-        y[int(len(score) / 2): len(score)] = 0
+        pos_score = score[0: int(len(score) / 2)]
+        neg_score = score[int(len(score) / 2): len(score)]
 
-        loss = F.binary_cross_entropy(score, y, reduction='sum')
+        # y = torch.ones(len(score))
+        # y[int(len(score) / 2): len(score)] = 0
+
+        # loss = F.binary_cross_entropy(score, y, reduction='sum')
+        loss = self.criterion(pos_score, neg_score, torch.Tensor([-1]))
         # print('Loss calculates')
         self.optimizer.zero_grad()
         loss.backward()
