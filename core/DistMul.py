@@ -6,13 +6,14 @@ class DistMul(nn.Module):
     def __init__(self, params):
         super(DistMul, self).__init__()
         self.params = params
-        self.rel_emb = nn.Parameter(torch.rand((self.params.total_rel - 1) // 2, self.params.emb_dim), requires_grad=True)  # (R_, d) R_ is just the relations without the direction and self connection
+        self.rel_emb = nn.Parameter(torch.empty((self.params.total_rel - 1) // 2, self.params.emb_dim), requires_grad=True)  # (R_, d) R_ is just the relations without the direction and self connection
+        nn.init.xavier_uniform_(self.rel_emb.data)
 
     def get_score(self, heads, tails, rels):
         '''
         heads : (batch/sample_size, d)
         tails : (batch/sample_size, d)
-        rels : (batch/sample_size, d, d)
+        rels : (batch/sample_size, d)
         '''
 
         # print('calculating decoder scores...')
@@ -29,6 +30,6 @@ class DistMul(nn.Module):
         '''
         heads = ent_emb[batch_h]  # (batch_size, d)
         tails = ent_emb[batch_t]  # (batch_size, d)
-        rels = self.rel_emb[batch_r]  # (batch_size, d, d)
+        rels = self.rel_emb[batch_r]  # (batch_size, d)
 
         return self.get_score(heads, tails, rels)

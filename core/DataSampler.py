@@ -3,6 +3,18 @@ import numpy as np
 import scipy.sparse as sp
 
 
+def get_torch_sparse_matrix(A):
+    '''
+    A : list of sparse adjacency matrices
+    '''
+    idx = [[a.tocoo().row, a.tocoo().col] for a in A]
+    dat = [a.tocoo().data for a in A]
+    print(A[0].dtype)
+    i = [torch.LongTensor(s) for s in idx]
+    v = [torch.FloatTensor(t) for t in dat]
+    return [torch.sparse.FloatTensor(i_, v_, torch.Size([A[0].shape[0], A[0].shape[1]])) for i_, v_ in zip(i, v)]
+
+
 class DataSampler():
     def __init__(self, file_path, debug=False):
         end = 20001 if debug else -1
@@ -15,11 +27,13 @@ class DataSampler():
         e = 14541
         self.adj_mat = []
         for i in range(r):
-            idx = np.argwhere(self.data[:, 2] == 0)
-            adj = sp.csr_matrix((np.ones(len(idx)) / len(idx), (self.data[:, 0][idx].squeeze(), self.data[:, 1][idx].squeeze())), shape=(e, e), dtype=np.int8)
+            idx = np.argwhere(self.data[:, 2] == r)
+            adj = sp.csr_matrix((np.ones(len(idx)) / len(idx), (self.data[:, 0][idx].squeeze(), self.data[:, 1][idx].squeeze())), shape=(e, e))
             self.adj_mat.append(adj)
             self.adj_mat.append(adj.T)
         self.adj_mat.append(sp.identity(self.adj_mat[0].shape[0]).tocsr())  # add identity matrix
+
+        self.adj_mat = get_torch_sparse_matrix(self.adj_mat)
 
         self.ent = self.get_ent(self.data)
         self.rel = self.get_rel(self.data)

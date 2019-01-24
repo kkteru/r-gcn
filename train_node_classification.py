@@ -18,14 +18,14 @@ parser.add_argument("--dataset", type=str, default="aifb",
 
 parser.add_argument("--nEpochs", type=int, default=10,
                     help="Learning rate of the optimizer")
-parser.add_argument("--eval_every", type=int, default=2,
+parser.add_argument("--eval_every", type=int, default=25,
                     help="Interval of epochs to evaluate the model?")
-parser.add_argument("--save_every", type=int, default=5,
+parser.add_argument("--save_every", type=int, default=50,
                     help="Interval of epochs to save a checkpoint of the model?")
 parser.add_argument("--patience", type=int, default=10,
                     help="Early stopping patience")
 
-parser.add_argument("--optimizer", type=str, default="SGD",
+parser.add_argument("--optimizer", type=str, default="Adam",
                     help="Which optimizer to use?")
 parser.add_argument("--lr", type=float, default=0.1,
                     help="Learning rate of the optimizer")
@@ -33,15 +33,19 @@ parser.add_argument("--momentum", type=float, default=0,
                     help="Momentum of the SGD optimizer")
 parser.add_argument("--clip", type=int, default=1000,
                     help="Maximum gradient norm allowed.")
+parser.add_argument("--margin", type=int, default=1,
+                    help="The margin between positive and negative samples in the max-margin loss")
 
 parser.add_argument("--emb_dim", type=int, default=50,
                     help="Entity embedding size")
-parser.add_argument("--gcn_layers", type=int, default=2,
+parser.add_argument("--gcn_layers", type=int, default=1,
                     help="Number of GCN layers")
 parser.add_argument("--n_class", type=int, default=4,
                     help="Number of classes in classification task")
 
 parser.add_argument("--debug", type=bool_flag, default=False,
+                    help="Run the code in debug mode?")
+parser.add_argument("--no_encoder", type=bool_flag, default=True,
                     help="Run the code in debug mode?")
 
 params = parser.parse_args()
@@ -50,6 +54,8 @@ initialize_experiment(params)
 
 with open(MAIN_DIR + '/' + params.dataset + '.pickle', 'rb') as f:
     classifier_data = pkl.load(f)
+
+classifier_data['A'] = get_torch_sparse_matrix(classifier_data['A'])
 
 params.total_rel = len(classifier_data['A'])
 params.total_ent = classifier_data['A'][0].shape[0]

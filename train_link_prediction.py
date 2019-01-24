@@ -28,7 +28,7 @@ parser.add_argument("--sample_size", type=int, default=30,
                     help="No. of negative samples to compare to for MRR/MR/Hit@10")
 parser.add_argument("--patience", type=int, default=10,
                     help="Early stopping patience")
-parser.add_argument("--optimizer", type=str, default="SGD",
+parser.add_argument("--optimizer", type=str, default="Adam",
                     help="Which optimizer to use?")
 parser.add_argument("--lr", type=float, default=0.1,
                     help="Learning rate of the optimizer")
@@ -41,7 +41,7 @@ parser.add_argument("--margin", type=int, default=1,
 
 parser.add_argument("--emb_dim", type=int, default=50,
                     help="Entity embedding size")
-parser.add_argument("--gcn_layers", type=int, default=2,
+parser.add_argument("--gcn_layers", type=int, default=1,
                     help="Number of GCN layers")
 parser.add_argument("--n_class", type=int, default=4,
                     help="Number of classes in classification task")
@@ -83,14 +83,15 @@ tb_logger = Logger(params.exp_dir)
 
 for e in range(params.nEpochs):
     tic = time.time()
-    for b in range(params.nBatches):
+    for b in range(nBatches):
         loss = trainer.link_pred_one_step(batch_size)
     toc = time.time()
 
     tb_logger.scalar_summary('loss', loss, e)
 
     logging.info('Epoch %d with loss: %f and emb norm %f in %f'
-                 % (e, loss, torch.mean(evaluator.encoder.ent_emb), toc - tic))
+                 % (e, loss, torch.mean(trainer.encoder.ent_emb), toc - tic))
+    print(torch.sum(trainer.encoder.rel_trans.grad))
     if (e + 1) % params.eval_every == 0:
         log_data = evaluator.link_log_data()
         logging.info('Performance:' + str(log_data))

@@ -271,10 +271,10 @@ def load_data(dataset_str='aifb', limit=-1):
                 data = np.ones(len(row))
 
                 adj = sp.csr_matrix((data, (row, col)), shape=adj_shape,
-                                    dtype=np.int8)
+                                    dtype=np.uint8)
 
                 adj_transp = sp.csr_matrix((data, (col, row)), shape=adj_shape,
-                                           dtype=np.int8)
+                                           dtype=np.uint8)
 
                 save_sparse_csr(adj_fprepend + '%d.npz' % (i * 2), adj)
                 save_sparse_csr(adj_fprepend + '%d.npz' % (i * 2 + 1),

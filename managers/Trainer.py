@@ -27,6 +27,8 @@ class Trainer():
         self.model_params = list(self.encoder.parameters()) + (list(self.decoder.parameters()) if decoder is not None else list(self.classifier.parameters()))
         if params.optimizer == "SGD":
             self.optimizer = optim.SGD(self.model_params, lr=params.lr, momentum=params.momentum)
+        if params.optimizer == "Adam":
+            self.optimizer = optim.Adam(self.model_params, lr=params.lr)
 
     def classifier_one_step(self):
         train_batch = self.classifier_data['train_idx']  # (batch_size)
@@ -54,9 +56,7 @@ class Trainer():
         adj_mat = self.link_data_sampler.adj_mat
 
         ent_emb = self.encoder(adj_mat)
-        # print('done with encoding')
         score = self.decoder(batch_h, batch_t, batch_r, ent_emb)
-        # print('done with decoding')
 
         pos_score = score[0: int(len(score) / 2)]
         neg_score = score[int(len(score) / 2): len(score)]
@@ -66,7 +66,6 @@ class Trainer():
 
         # loss = F.binary_cross_entropy(score, y, reduction='sum')
         loss = self.criterion(pos_score, neg_score, torch.Tensor([-1]))
-        # print('Loss calculates')
         self.optimizer.zero_grad()
         loss.backward()
         nn.utils.clip_grad_norm_(self.model_params, self.params.clip)

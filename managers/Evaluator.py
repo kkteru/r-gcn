@@ -2,13 +2,13 @@ import numpy as np
 
 
 class Evaluator():
-    def __init__(self, encoder, decoder, classifier, classification_data, link_data_sampler, neg_sample_size):
+    def __init__(self, encoder, decoder, classifier, classification_data, link_data_sampler, neg_sample_size=0):
         self.encoder = encoder
         self.decoder = decoder
         self.classifier = classifier
         self.classification_data = classification_data
         self.link_data_sampler = link_data_sampler
-        self.neg_sample_size = neg_sample_size
+        self.neg_sample_size = neg_sample_size if neg_sample_size != 0 else len(link_data_sampler.data)
 
     def classifier_log_data(self):
         valid_idx = self.classification_data['valid_idx']
