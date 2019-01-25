@@ -25,7 +25,7 @@ class GCN(nn.Module):
             emb_acc = torch.empty(self.params.total_rel, self.params.total_ent, self.params.emb_dim).to(device=self.params.device)  # (R + 1 X N X d)
             for l in range(self.n_layers):
                 for i, mat in enumerate(adj_mat):
-                    emb_acc[i] = torch.matmul(mat, emb)
+                    emb_acc[i] = torch.matmul(mat, emb).to(device=self.params.device)
                 tmp = torch.matmul(self.rel_trans[l], emb_acc.transpose(1, 2)).transpose(1, 2)  # (R + 1 X N X d) Shoud be different weights for different layers?
                 emb = F.relu(torch.sum(tmp, dim=0))
             emb = F.normalize(emb)
