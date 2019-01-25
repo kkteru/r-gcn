@@ -36,7 +36,7 @@ class Evaluator():
 
         assert scores.shape == (len(head_ids), )
 
-        return np.where(head_ids[scores.argsort()] == sample[0])[0][0] + 1
+        return np.where(head_ids[scores.cpu().argsort()] == sample[0])[0][0] + 1
 
     def link_log_data(self):
         ranks = np.array(list(map(self._rank_triplets, self.link_data_sampler.data)))
