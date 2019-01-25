@@ -34,7 +34,7 @@ class Trainer():
         train_batch = self.classifier_data['train_idx']  # (batch_size)
         y = self.classifier_data['y']  # y: (batch_size, n)
         adj_mat = self.classifier_data['A']
-        y = torch.LongTensor(np.array(np.argmax(y[train_batch], axis=-1)).squeeze())  # y: (batch_size)
+        y = torch.LongTensor(np.array(np.argmax(y[train_batch], axis=-1)).squeeze()).to(device=self.params.device)  # y: (batch_size)
 
         # print(self.encoder.rel_trans)
         ent_emb = self.encoder(adj_mat)
@@ -65,7 +65,7 @@ class Trainer():
         # y[int(len(score) / 2): len(score)] = 0
 
         # loss = F.binary_cross_entropy(score, y, reduction='sum')
-        loss = self.criterion(pos_score, neg_score, torch.Tensor([-1]))
+        loss = self.criterion(pos_score, neg_score, torch.Tensor([-1]).to(device=self.params.device))
         self.optimizer.zero_grad()
         loss.backward()
         nn.utils.clip_grad_norm_(self.model_params, self.params.clip)

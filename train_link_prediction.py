@@ -48,15 +48,23 @@ parser.add_argument("--n_class", type=int, default=4,
 
 parser.add_argument("--debug", type=bool_flag, default=False,
                     help="Run the code in debug mode?")
-parser.add_argument("--no_encoder", type=bool_flag, default=True,
+parser.add_argument("--no_encoder", type=bool_flag, default=False,
                     help="Run the code in debug mode?")
+parser.add_argument('--disable-cuda', action='store_true',
+                    help='Disable CUDA')
 
 params = parser.parse_args()
 
 initialize_experiment(params)
 
-link_train_data_sampler = DataSampler(TRAIN_DATA_PATH, params.debug)
-link_valid_data_sampler = DataSampler(VALID_DATA_PATH)
+params.device = None
+if not params.disable_cuda and torch.cuda.is_available():
+    params.device = torch.device('cuda')
+else:
+    params.device = torch.device('cpu')
+
+link_train_data_sampler = DataSampler(params, TRAIN_DATA_PATH, params.debug)
+link_valid_data_sampler = DataSampler(params, VALID_DATA_PATH)
 
 params.total_rel = 475
 params.total_ent = 14541
@@ -76,7 +84,7 @@ tb_logger = Logger(params.exp_dir)
 
 for e in range(params.nEpochs):
     tic = time.time()
-    for b in range(nBatches):
+    for b in range(1):
         loss = trainer.link_pred_one_step(batch_size)
     toc = time.time()
 

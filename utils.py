@@ -284,9 +284,9 @@ def initialize_model(params):
             sm_classifier = torch.load(os.path.join(params.exp_dir, 'best_classifier.pth'))  # Update these
     else:
         logging.info('No existing model found. Initializing new model..')
-        gcn = GCN(params)
-        distmul = DistMul(params)
-        sm_classifier = SoftmaxClassifier(params)
+        gcn = GCN(params).to(device=params.device)
+        distmul = DistMul(params).to(device=params.device)
+        sm_classifier = SoftmaxClassifier(params).to(device=params.device)
 
     return gcn, distmul, sm_classifier
 
@@ -350,13 +350,11 @@ class Logger(object):
         self.writer.flush()
 
 
-def get_torch_sparse_matrix(A):
+def get_torch_sparse_matrix(A, dev):
     '''
     A : list of sparse adjacency matrices
     '''
-    idx = [[a.tocoo().row, a.tocoo().col] for a in A]
-    dat = [a.tocoo().data for a in A]
-    print(A[0].dtype)
-    i = [torch.LongTensor(s) for s in idx]
-    v = [torch.FloatTensor(t) for t in dat]
-    return [torch.sparse.FloatTensor(i_, v_, torch.Size([A[0].shape[0], A[0].shape[1]])) for i_, v_ in zip(i, v)]
+    idx = torch.LongTensor([A.tocoo().row, A.tocoo().col])
+    dat = torch.FloatTensor(A.tocoo().data)
+    # print(A[0].dtype)
+    return torch.sparse.FloatTensor(idx, dat, torch.Size([A.shape[0], A.shape[1]])).to(device=dev)
