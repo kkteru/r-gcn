@@ -21,6 +21,7 @@ class GCN(nn.Module):
         A : list of sparse torch adjacency matrices
         '''
         emb = self.ent_emb
+        print(self.ent_emb.is_cuda, self.rel_trans.is_cuda)
         if not self.params.no_encoder:
             emb_acc = torch.empty(self.params.total_rel, self.params.total_ent, self.params.emb_dim).to(device=self.params.device)  # (R + 1 X N X d)
             for l in range(self.n_layers):
