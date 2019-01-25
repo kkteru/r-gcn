@@ -11,7 +11,7 @@ class GCN(nn.Module):
         super(GCN, self).__init__()
         self.params = params
         self.n_layers = self.params.gcn_layers
-        self.ent_emb = nn.Parameter(torch.empty(self.params.total_ent, self.params.emb_dim), requires_grad=self.params.no_encoder)  # (N, d)
+        self.ent_emb = nn.Parameter(torch.empty(self.params.total_ent, self.params.emb_dim), requires_grad=True)  # (N, d)
         self.rel_trans = nn.Parameter(torch.empty(self.n_layers, self.params.total_rel, self.params.emb_dim, self.params.emb_dim), requires_grad=True)  # (R + 1 x d x d); + 1 for the self loop
         nn.init.xavier_uniform_(self.rel_trans.data)
         nn.init.xavier_uniform_(self.ent_emb.data)
@@ -29,5 +29,4 @@ class GCN(nn.Module):
                 tmp = torch.matmul(self.rel_trans[l], emb_acc.transpose(1, 2)).transpose(1, 2)  # (R + 1 X N X d) Shoud be different weights for different layers?
                 emb = F.relu(torch.sum(tmp, dim=0))
             emb = F.normalize(emb)
-        self.ent_emb.data = emb.data
         return emb
