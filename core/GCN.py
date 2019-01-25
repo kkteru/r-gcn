@@ -22,7 +22,7 @@ class GCN(nn.Module):
         '''
         emb = self.ent_emb
         if not self.params.no_encoder:
-            emb_acc = torch.empty(self.params.total_rel, self.params.total_ent, self.params.emb_dim)  # (R + 1 X N X d)
+            emb_acc = torch.empty(self.params.total_rel, self.params.total_ent, self.params.emb_dim).to(device=self.params.device)  # (R + 1 X N X d)
             for l in range(self.n_layers):
                 for i, mat in enumerate(adj_mat):
                     emb_acc[i] = torch.matmul(mat, emb)
