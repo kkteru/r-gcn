@@ -45,7 +45,7 @@ parser.add_argument("--n_class", type=int, default=4,
 
 parser.add_argument("--debug", type=bool_flag, default=False,
                     help="Run the code in debug mode?")
-parser.add_argument("--no_encoder", type=bool_flag, default=True,
+parser.add_argument("--no_encoder", type=bool_flag, default=False,
                     help="Run the code in debug mode?")
 
 params = parser.parse_args()
@@ -78,8 +78,12 @@ for e in range(params.nEpochs):
 
     tb_logger.scalar_summary('loss', loss, e)
 
-    logging.info('Epoch %d with loss: %f in %f'
-                 % (e, loss, toc - tic))
+    logging.info('Epoch %d with loss: %f and emb norm %f in %f'
+                 % (e, loss, torch.mean(trainer.encoder.ent_emb), toc - tic))
+    # print(torch.sum(trainer.encoder.rel_trans.grad))
+
+    # logging.info('Epoch %d with loss: %f in %f'
+    #              % (e, loss, toc - tic))
     if (e + 1) % params.eval_every == 0:
         log_data = evaluator.classifier_log_data()
         logging.info('Performance:' + str(log_data))

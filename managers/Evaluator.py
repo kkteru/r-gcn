@@ -11,7 +11,7 @@ class Evaluator():
         self.neg_sample_size = neg_sample_size if neg_sample_size != 0 else len(link_data_sampler.data)
 
     def classifier_log_data(self):
-        valid_idx = self.classification_data['valid_idx']
+        valid_idx = self.classification_data['train_idx']
         pred = self.classifier.get_prediction(self.encoder.ent_emb, valid_idx)
         acc = np.mean(pred.numpy() == np.argmax(self.classification_data['y'][valid_idx], axis=1))
 

@@ -65,13 +65,6 @@ logging.info('Loaded %s dataset with %d entities and %d relations' % (params.dat
 
 gcn, distmul, _ = initialize_model(params)
 
-# print([model_params.data.shape for model_params in gcn.parameters()])
-# print([model_params.data.shape for model_params in distmul.parameters()])
-# print([model_params.data.shape for model_params in sm_classifier.parameters()])
-
-# for m_param in gcn.parameters():
-#     print(type(m_param.data), m_param.size())
-
 trainer = Trainer(params, gcn, distmul, None, None, link_train_data_sampler)
 evaluator = Evaluator(gcn, distmul, None, None, link_valid_data_sampler, params.sample_size)
 
@@ -91,7 +84,9 @@ for e in range(params.nEpochs):
 
     logging.info('Epoch %d with loss: %f and emb norm %f in %f'
                  % (e, loss, torch.mean(trainer.encoder.ent_emb), toc - tic))
-    print(torch.sum(trainer.encoder.rel_trans.grad))
+    if trainer.encoder.rel_trans.grad is not None:
+        print('GCN relation weight gradients sum: ', torch.sum(trainer.encoder.rel_trans.grad))
+
     if (e + 1) % params.eval_every == 0:
         log_data = evaluator.link_log_data()
         logging.info('Performance:' + str(log_data))
