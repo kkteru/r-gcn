@@ -59,7 +59,7 @@ if not params.disable_cuda and torch.cuda.is_available():
     params.device = torch.device('cuda')
 else:
     params.device = torch.device('cpu')
-
+print(params.device)
 with open(MAIN_DIR + '/' + params.dataset + '.pickle', 'rb') as f:
     classifier_data = pkl.load(f)
 
