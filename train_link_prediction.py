@@ -84,7 +84,7 @@ logging.info('Starting training with batch size %d' % batch_size)
 
 for e in range(params.nEpochs):
     tic = time.time()
-    for b in range(1):
+    for b in range(params.nBatches):
         loss = trainer.link_pred_one_step(batch_size)
     toc = time.time()
 
