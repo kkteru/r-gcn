@@ -99,8 +99,8 @@ for e in range(params.nEpochs):
         log_data = evaluator.link_log_data()
         logging.info('Performance:' + str(log_data))
 
-        for tag, value in log_data.items():
-            # tb_logger.scalar_summary(tag, value, e + 1)
+        # for tag, value in log_data.items():
+        # tb_logger.scalar_summary(tag, value, e + 1)
 
         to_continue = trainer.save_link_predictor(log_data)
         if not to_continue:
