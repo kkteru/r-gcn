@@ -78,14 +78,14 @@ evaluator = Evaluator(gcn, None, sm_classifier, classifier_data, None, None)
 
 logging.info('Starting training with full batch...')
 
-tb_logger = Logger(params.exp_dir)
+# tb_logger = Logger(params.exp_dir)
 
 for e in range(params.nEpochs):
     tic = time.time()
     loss = trainer.classifier_one_step()
     toc = time.time()
 
-    tb_logger.scalar_summary('loss', loss, e)
+    # tb_logger.scalar_summary('loss', loss, e)
 
     logging.info('Epoch %d with loss: %f and emb norm %f in %f'
                  % (e, loss, torch.mean(trainer.encoder.ent_emb), toc - tic))
@@ -98,7 +98,7 @@ for e in range(params.nEpochs):
         logging.info('Performance:' + str(log_data))
 
         for tag, value in log_data.items():
-            tb_logger.scalar_summary(tag, value, e + 1)
+            # tb_logger.scalar_summary(tag, value, e + 1)
 
         to_continue = trainer.save_classifier(log_data)
         if not to_continue:
