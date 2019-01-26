@@ -90,7 +90,7 @@ for e in range(params.nEpochs):
     logging.info('Epoch %d with loss: %f and emb norm %f in %f'
                  % (e, loss, torch.mean(trainer.encoder.ent_emb), toc - tic))
     if trainer.encoder.rel_trans.grad is not None:
-        print('GCN relation weight gradients sum: ', torch.sum(trainer.encoder.rel_trans.grad))
+        logging.info('GCN relation weight gradients sum: ', torch.sum(trainer.encoder.rel_trans.grad))
 
     # print(torch.sum(trainer.encoder.rel_trans.grad))
 
