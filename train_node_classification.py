@@ -13,8 +13,8 @@ parser = argparse.ArgumentParser(description='TransE model')
 
 parser.add_argument("--experiment_name", type=str, default="default",
                     help="A folder with this name would be created to dump saved models and log files")
-parser.add_argument("--dataset", type=str, default="aifb",
-                    help="Dataset string ('aifb', 'mutag', 'bgs', 'am')")
+parser.add_argument("--dataset", type=str, default="cora",
+                    help="Dataset string ('aifb', 'mutag', 'bgs', 'am', 'cora')")
 
 parser.add_argument("--nEpochs", type=int, default=10,
                     help="Learning rate of the optimizer")
@@ -38,9 +38,11 @@ parser.add_argument("--margin", type=int, default=1,
 
 parser.add_argument("--emb_dim", type=int, default=50,
                     help="Entity embedding size")
+parser.add_argument("--feat_in", type=int, default=1433,
+                    help="Entity embedding size")
 parser.add_argument("--gcn_layers", type=int, default=1,
                     help="Number of GCN layers")
-parser.add_argument("--n_class", type=int, default=4,
+parser.add_argument("--n_class", type=int, default=7,
                     help="Number of classes in classification task")
 
 parser.add_argument("--debug", type=bool_flag, default=False,
@@ -88,9 +90,9 @@ for e in range(params.nEpochs):
     # tb_logger.scalar_summary('loss', loss, e)
 
     logging.info('Epoch %d with loss: %f and emb norm %f in %f'
-                 % (e, loss, torch.mean(trainer.encoder.ent_emb), toc - tic))
-    if trainer.encoder.rel_trans.grad is not None:
-        logging.info('GCN relation weight gradients sum: %f' % torch.sum(trainer.encoder.rel_trans.grad))
+                 % (e, loss, 0.1, toc - tic))
+    # if trainer.encoder.rel_trans.grad is not None:
+    #     logging.info('GCN relation weight gradients sum: %f' % torch.sum(trainer.encoder.rel_trans.grad))
 
     # print(torch.sum(trainer.encoder.rel_trans.grad))
 
@@ -106,6 +108,7 @@ for e in range(params.nEpochs):
     #     to_continue = trainer.save_classifier(log_data)
     #     if not to_continue:
     #         break
+
     # if (e + 1) % params.save_every == 0:
     #     torch.save(gcn, os.path.join(params.exp_dir, 'gcn_checkpoint.pth'))
     #     torch.save(sm_classifier, os.path.join(params.exp_dir, 'sm_checkpoint.pth'))

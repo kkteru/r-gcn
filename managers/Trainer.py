@@ -1,5 +1,7 @@
 import os
 import logging
+import pdb
+
 
 import numpy as np
 import torch
@@ -33,13 +35,23 @@ class Trainer():
     def classifier_one_step(self):
         train_batch = self.classifier_data['train_idx']  # (batch_size)
         y = self.classifier_data['y']  # y: (batch_size, n)
+
+        # pdb.set_trace()
+
         adj_mat = self.classifier_data['A']
-        y = torch.LongTensor(np.array(np.argmax(y[train_batch], axis=-1)).squeeze()).to(device=self.params.device)  # y: (batch_size)
+        # y = torch.LongTensor(np.array(np.argmax(y[train_batch], axis=-1)).squeeze()).to(device=self.params.device)  # y: (batch_size)
+        y = y[train_batch]
+        # pdb.set_trace()
+        X = torch.Tensor(self.classifier_data['feat']).to(device=self.params.device)
 
         # print(self.encoder.rel_trans)
-        ent_emb = self.encoder(adj_mat)
+        ent_emb = self.encoder(X, adj_mat)
+        # scores = ent_emb[train_batch]
         scores = self.classifier(ent_emb, train_batch)
-        loss = F.cross_entropy(scores, y)
+
+        # pdb.set_trace()
+
+        loss = F.nll_loss(scores, y)
 
         self.optimizer.zero_grad()
         loss.backward()

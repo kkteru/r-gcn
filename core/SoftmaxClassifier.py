@@ -1,5 +1,6 @@
 import torch
 import torch.nn as nn
+import torch.nn.functional as F
 
 # n : n_class
 
@@ -23,4 +24,4 @@ class SoftmaxClassifier(nn.Module):
         '''
         scores = torch.matmul(ent_emb[batch], self.weights)  # (batch_size, n)
 
-        return scores
+        return F.log_softmax(scores, dim=1)

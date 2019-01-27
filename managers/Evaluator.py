@@ -1,20 +1,27 @@
 import numpy as np
+import torch
+import pdb
 
 
 class Evaluator():
-    def __init__(self, encoder, decoder, classifier, classification_data, link_data_sampler, neg_sample_size=0):
+    def __init__(self, params, encoder, decoder, classifier, classification_data, link_data_sampler, neg_sample_size=0):
         self.encoder = encoder
         self.decoder = decoder
         self.classifier = classifier
         self.classification_data = classification_data
         self.link_data_sampler = link_data_sampler
         self.neg_sample_size = neg_sample_size if neg_sample_size != 0 else len(link_data_sampler.data)
+        self.params = params
 
     def classifier_log_data(self):
         valid_idx = self.classification_data['valid_idx']
+
         ent_emb = self.encoder(self.classification_data['A'])
         pred = self.classifier.get_prediction(ent_emb, valid_idx)
-        acc = np.mean(pred.cpu().numpy() == np.argmax(self.classification_data['y'][valid_idx], axis=1))
+        if self.params.dataset == 'cora':
+            acc = np.mean(pred.cpu().numpy() == self.classification_data['y'][valid_idx].numpy())
+        else:
+            acc = np.mean(pred.cpu().numpy() == np.argmax(self.classification_data['y'][valid_idx], axis=1))
 
         log_data = dict([
             ('acc', acc)])

@@ -10,6 +10,11 @@ import scipy.sparse as sp
 from io import BytesIO
 
 from core import GCN, SoftmaxClassifier, DistMul
+# from pygcn.models import GCN
+# GCN(nfeat=1433,
+#                   nhid=16,
+#                   nclass=7,
+#                   dropout=0)  #
 
 FALSY_STRINGS = {'off', 'false', '0'}
 TRUTHY_STRINGS = {'on', 'true', '1'}
