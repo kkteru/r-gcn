@@ -12,7 +12,8 @@ class Evaluator():
 
     def classifier_log_data(self):
         valid_idx = self.classification_data['valid_idx']
-        pred = self.classifier.get_prediction(self.encoder.ent_emb, valid_idx)
+        ent_emb = self.encoder(self.classification_data['A'])
+        pred = self.classifier.get_prediction(ent_emb, valid_idx)
         acc = np.mean(pred.cpu().numpy() == np.argmax(self.classification_data['y'][valid_idx], axis=1))
 
         log_data = dict([
