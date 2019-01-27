@@ -16,7 +16,8 @@ class Evaluator():
     def classifier_log_data(self):
         valid_idx = self.classification_data['valid_idx']
 
-        ent_emb = self.encoder(self.classification_data['A'])
+        X = torch.Tensor(self.classification_data['feat'])
+        ent_emb = self.encoder(X, self.classification_data['A'])
         pred = self.classifier.get_prediction(ent_emb, valid_idx)
         if self.params.dataset == 'cora':
             acc = np.mean(pred.cpu().numpy() == self.classification_data['y'][valid_idx].numpy())

@@ -51,7 +51,7 @@ class Trainer():
 
         # pdb.set_trace()
 
-        loss = F.nll_loss(scores, y)
+        loss = F.cross_entropy(scores, y)
 
         self.optimizer.zero_grad()
         loss.backward()
