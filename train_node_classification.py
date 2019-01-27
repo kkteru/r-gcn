@@ -103,9 +103,9 @@ for e in range(params.nEpochs):
         # for tag, value in log_data.items():
         # tb_logger.scalar_summary(tag, value, e + 1)
 
-        to_continue = trainer.save_classifier(log_data)
-        if not to_continue:
-            break
-    if (e + 1) % params.save_every == 0:
-        torch.save(gcn, os.path.join(params.exp_dir, 'gcn_checkpoint.pth'))
-        torch.save(sm_classifier, os.path.join(params.exp_dir, 'sm_checkpoint.pth'))
+    #     to_continue = trainer.save_classifier(log_data)
+    #     if not to_continue:
+    #         break
+    # if (e + 1) % params.save_every == 0:
+    #     torch.save(gcn, os.path.join(params.exp_dir, 'gcn_checkpoint.pth'))
+    #     torch.save(sm_classifier, os.path.join(params.exp_dir, 'sm_checkpoint.pth'))
