@@ -17,12 +17,13 @@ class Evaluator():
         valid_idx = self.classification_data['valid_idx']
 
         X = torch.Tensor(self.classification_data['feat'])
+        # pdb.set_trace()
         ent_emb = self.encoder(X, self.classification_data['A'])
         pred = self.classifier.get_prediction(ent_emb, valid_idx)
         if self.params.dataset == 'cora':
             acc = np.mean(pred.cpu().numpy() == self.classification_data['y'][valid_idx].numpy())
         else:
-            acc = np.mean(pred.cpu().numpy() == np.argmax(self.classification_data['y'][valid_idx], axis=1))
+            acc = np.mean(pred.cpu().numpy() == np.argmax(self.classification_data['y'][valid_idx], axis=1).squeeze())
 
         log_data = dict([
             ('acc', acc)])

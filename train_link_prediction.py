@@ -41,6 +41,8 @@ parser.add_argument("--margin", type=int, default=1,
 
 parser.add_argument("--emb_dim", type=int, default=50,
                     help="Entity embedding size")
+parser.add_argument("--feat_in", type=int, default=14541,
+                    help="Entity embedding size")
 parser.add_argument("--gcn_layers", type=int, default=1,
                     help="Number of GCN layers")
 parser.add_argument("--n_class", type=int, default=4,
@@ -52,6 +54,10 @@ parser.add_argument("--no_encoder", type=bool_flag, default=False,
                     help="Run the code in debug mode?")
 parser.add_argument('--disable-cuda', action='store_true',
                     help='Disable CUDA')
+
+parser.add_argument('--use_pygcn', action='store_true',
+                    help='Disable CUDA')
+
 
 params = parser.parse_args()
 
@@ -69,12 +75,12 @@ link_valid_data_sampler = DataSampler(params, VALID_DATA_PATH)
 params.total_rel = 475
 params.total_ent = 14541
 
-logging.info('Loaded %s dataset with %d entities and %d relations' % (params.dataset, params.total_ent, params.total_rel))
+# logging.info('Loaded %s dataset with %d entities and %d relations' % (params.dataset, params.total_ent, params.total_rel))
 
 gcn, distmul, _ = initialize_model(params)
 
 trainer = Trainer(params, gcn, distmul, None, None, link_train_data_sampler)
-evaluator = Evaluator(gcn, distmul, None, None, link_valid_data_sampler, params.sample_size)
+evaluator = Evaluator(params, gcn, distmul, None, None, link_valid_data_sampler, params.sample_size)
 
 batch_size = int(len(link_train_data_sampler.data) / params.nBatches)
 

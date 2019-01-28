@@ -8,13 +8,11 @@ import numpy as np
 import scipy.misc
 import scipy.sparse as sp
 from io import BytesIO
+import pdb
 
-from core import GCN, SoftmaxClassifier, DistMul
-# from pygcn.models import GCN
-# GCN(nfeat=1433,
-#                   nhid=16,
-#                   nclass=7,
-#                   dropout=0)  #
+from core import SoftmaxClassifier, DistMul
+from core import GCN
+from pygcn.models import GCN as PyGCN
 
 FALSY_STRINGS = {'off', 'false', '0'}
 TRUTHY_STRINGS = {'on', 'true', '1'}
@@ -289,7 +287,12 @@ def initialize_model(params):
             sm_classifier = torch.load(os.path.join(params.exp_dir, 'best_classifier.pth'))  # Update these
     else:
         logging.info('No existing model found. Initializing new model..')
-        gcn = GCN(params).to(device=params.device)
+        if not params.use_pygcn:
+            print('Using own GCN...')
+            gcn = GCN(params).to(device=params.device)
+        else:
+            print('Using pygcn...')
+            gcn = PyGCN(params.total_rel, params.feat_in, params.emb_dim, params.emb_dim).to(device=params.device)
         distmul = DistMul(params).to(device=params.device)
         sm_classifier = SoftmaxClassifier(params).to(device=params.device)
 

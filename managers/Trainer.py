@@ -27,6 +27,8 @@ class Trainer():
         self.criterion = nn.MarginRankingLoss(self.params.margin, reduction='sum')
 
         self.model_params = list(self.encoder.parameters()) + (list(self.decoder.parameters()) if decoder is not None else list(self.classifier.parameters()))
+        logging.info('Total number of parameters: %d' % sum(map(lambda x: x.numel(), self.model_params)))
+        # pdb.set_trace()
         if params.optimizer == "SGD":
             self.optimizer = optim.SGD(self.model_params, lr=params.lr, momentum=params.momentum)
         if params.optimizer == "Adam":
@@ -47,7 +49,7 @@ class Trainer():
 
         # pdb.set_trace()
         X = torch.Tensor(self.classifier_data['feat']).to(device=self.params.device)
-
+        # pdb.set_trace()
         # print(self.encoder.rel_trans)
         ent_emb = self.encoder(X, adj_mat)
         # scores = ent_emb[train_batch]

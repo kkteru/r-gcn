@@ -36,7 +36,7 @@ parser.add_argument("--clip", type=int, default=1000,
 parser.add_argument("--margin", type=int, default=1,
                     help="The margin between positive and negative samples in the max-margin loss")
 
-parser.add_argument("--emb_dim", type=int, default=50,
+parser.add_argument("--emb_dim", type=int, default=16,
                     help="Entity embedding size")
 parser.add_argument("--feat_in", type=int, default=1433,
                     help="Entity embedding size")
@@ -50,6 +50,9 @@ parser.add_argument("--debug", type=bool_flag, default=False,
 parser.add_argument("--no_encoder", type=bool_flag, default=False,
                     help="Run the code in debug mode?")
 parser.add_argument('--disable-cuda', action='store_true',
+                    help='Disable CUDA')
+
+parser.add_argument('--use_pygcn', action='store_true',
                     help='Disable CUDA')
 
 params = parser.parse_args()
@@ -89,8 +92,8 @@ for e in range(params.nEpochs):
 
     # tb_logger.scalar_summary('loss', loss, e)
 
-    logging.info('Epoch %d with loss: %f and emb norm %f in %f'
-                 % (e, loss, 0.1, toc - tic))
+    logging.info('Epoch %d with loss: %f in %f'
+                 % (e, loss, toc - tic))
     # if trainer.encoder.rel_trans.grad is not None:
     #     logging.info('GCN relation weight gradients sum: %f' % torch.sum(trainer.encoder.rel_trans.grad))
 
