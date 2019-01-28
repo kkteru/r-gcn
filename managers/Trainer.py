@@ -39,8 +39,12 @@ class Trainer():
         # pdb.set_trace()
 
         adj_mat = self.classifier_data['A']
-        # y = torch.LongTensor(np.array(np.argmax(y[train_batch], axis=-1)).squeeze()).to(device=self.params.device)  # y: (batch_size)
-        y = y[train_batch]
+
+        if self.params.dataset == 'cora':
+            y = y[train_batch]
+        else:
+            y = torch.LongTensor(np.array(np.argmax(y[train_batch], axis=-1)).squeeze()).to(device=self.params.device)  # y: (batch_size)
+
         # pdb.set_trace()
         X = torch.Tensor(self.classifier_data['feat']).to(device=self.params.device)
 
