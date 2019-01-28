@@ -76,7 +76,7 @@ logging.info('Loaded %s dataset with %d entities and %d relations' % (params.dat
 gcn, _, sm_classifier = initialize_model(params)
 
 trainer = Trainer(params, gcn, None, sm_classifier, classifier_data, None)
-evaluator = Evaluator(gcn, None, sm_classifier, classifier_data, None, None)
+evaluator = Evaluator(params, gcn, None, sm_classifier, classifier_data, None, None)
 
 logging.info('Starting training with full batch...')
 
