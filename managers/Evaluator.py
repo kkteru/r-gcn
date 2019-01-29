@@ -16,7 +16,7 @@ class Evaluator():
     def classifier_log_data(self):
         valid_idx = self.classification_data['valid_idx']
 
-        X = torch.Tensor(self.classification_data['feat'])
+        X = torch.Tensor(self.classification_data['feat']).to(device=self.params.device)
         # pdb.set_trace()
         ent_emb = self.encoder(X, self.classification_data['A'])
         pred = self.classifier.get_prediction(ent_emb, valid_idx)
