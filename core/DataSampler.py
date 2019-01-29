@@ -38,7 +38,7 @@ class DataSampler():
         self.ent = self.get_ent(self.data)
         self.rel = self.get_rel(self.data)
 
-        self.X = torch.eye(14541)
+        self.X = torch.eye(14541).to(device=self.params.device)
 
         logging.info('Loaded data sucessfully from %s. Samples = %d; Total entities = %d; Total relations = %d' % (file_path, len(self.data), len(self.ent), len(self.rel)))
 

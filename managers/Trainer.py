@@ -43,7 +43,7 @@ class Trainer():
         adj_mat = self.classifier_data['A']
 
         if self.params.dataset == 'cora':
-            y = y[train_batch]
+            y = y[train_batch].to(device=self.params.device)
         else:
             y = torch.LongTensor(np.array(np.argmax(y[train_batch], axis=-1)).squeeze()).to(device=self.params.device)  # y: (batch_size)
 
