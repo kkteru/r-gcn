@@ -38,6 +38,8 @@ class DataSampler():
         self.ent = self.get_ent(self.data)
         self.rel = self.get_rel(self.data)
 
+        self.X = torch.eye(14541)
+
         logging.info('Loaded data sucessfully from %s. Samples = %d; Total entities = %d; Total relations = %d' % (file_path, len(self.data), len(self.ent), len(self.rel)))
 
     def get_ent(self, debug=False):

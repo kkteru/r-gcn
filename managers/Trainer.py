@@ -72,8 +72,9 @@ class Trainer():
         '''
         batch_h, batch_t, batch_r = self.link_data_sampler.get_batch(batch_size)
         adj_mat = self.link_data_sampler.adj_mat
+        X = self.link_data_sampler.X
 
-        ent_emb = self.encoder(adj_mat)
+        ent_emb = self.encoder(X, adj_mat)
         score = self.decoder(batch_h, batch_t, batch_r, ent_emb)
 
         pos_score = score[0: int(len(score) / 2)]
