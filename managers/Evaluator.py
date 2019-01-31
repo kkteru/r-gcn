@@ -36,10 +36,7 @@ class Evaluator():
         head_ids = np.array(list(self.link_data_sampler.ent))[idx]
         head_ids[0] = sample[0]
 
-        adj_mat = self.link_data_sampler.adj_mat
-        X = self.link_data_sampler.X
-
-        ent_emb = self.encoder(X, adj_mat)
+        ent_emb = self.encoder.final_emb
 
         heads = ent_emb[head_ids]  # (sample_size, d)
         tails = ent_emb[[sample[1]] * len(head_ids)]  # (sample_size, d)
