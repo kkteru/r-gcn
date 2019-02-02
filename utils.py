@@ -5,14 +5,10 @@ import json
 import torch
 # import tensorflow as tf
 import numpy as np
-import scipy.misc
 import scipy.sparse as sp
-from io import BytesIO
 import pdb
 
-from core import SoftmaxClassifier, DistMul
-from core import GCN
-from pygcn.models import GCN as PyGCN
+from core import SoftmaxClassifier, DistMul, GCN
 
 FALSY_STRINGS = {'off', 'false', '0'}
 TRUTHY_STRINGS = {'on', 'true', '1'}
@@ -287,12 +283,7 @@ def initialize_model(params):
             sm_classifier = torch.load(os.path.join(params.exp_dir, 'best_classifier.pth'))  # Update these
     else:
         logging.info('No existing model found. Initializing new model..')
-        if not params.use_pygcn:
-            print('Using own GCN...')
-            gcn = GCN(params).to(device=params.device)
-        else:
-            print('Using pygcn...')
-            gcn = PyGCN(params.total_rel, params.feat_in, params.emb_dim, params.emb_dim).to(device=params.device)
+        gcn = GCN(params).to(device=params.device)
         distmul = DistMul(params).to(device=params.device)
         sm_classifier = SoftmaxClassifier(params).to(device=params.device)
 
@@ -364,5 +355,4 @@ def get_torch_sparse_matrix(A, dev):
     '''
     idx = torch.LongTensor([A.tocoo().row, A.tocoo().col])
     dat = torch.FloatTensor(A.tocoo().data)
-    # print(A[0].dtype)
     return torch.sparse.FloatTensor(idx, dat, torch.Size([A.shape[0], A.shape[1]])).to(device=dev)

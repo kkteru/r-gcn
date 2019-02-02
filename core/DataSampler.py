@@ -10,7 +10,6 @@ def get_torch_sparse_matrix(A, dev):
     '''
     idx = torch.LongTensor([A.tocoo().row, A.tocoo().col])
     dat = torch.FloatTensor(A.tocoo().data)
-    # print(A[0].dtype)
     return torch.sparse.FloatTensor(idx, dat, torch.Size([A.shape[0], A.shape[1]])).to(device=dev)
 
 
@@ -25,6 +24,8 @@ class DataSampler():
 
         r = 237
         e = 14541
+
+        # Build graph
         self.adj_mat = []
         for i in range(r):
             idx = np.argwhere(self.data[:, 2] == r)

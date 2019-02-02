@@ -16,14 +16,11 @@ class Evaluator():
     def classifier_log_data(self):
         valid_idx = self.classification_data['valid_idx']
 
-        X = torch.Tensor(self.classification_data['feat']).to(device=self.params.device)
         # pdb.set_trace()
-        ent_emb = self.encoder(X, self.classification_data['A'])
-        pred = self.classifier.get_prediction(ent_emb, valid_idx)
-        if self.params.dataset == 'cora':
-            acc = np.mean(pred.cpu().numpy() == self.classification_data['y'][valid_idx].numpy())
-        else:
-            acc = np.mean(pred.cpu().numpy() == np.argmax(self.classification_data['y'][valid_idx], axis=1).squeeze())
+        ent_emb = self.encoder.final_emb
+        pred = self.classifier(ent_emb[valid_idx])
+
+        acc = np.mean(pred.cpu().numpy() == np.argmax(self.classification_data['y'][valid_idx], axis=1).squeeze())
 
         log_data = dict([
             ('acc', acc)])
@@ -40,11 +37,8 @@ class Evaluator():
 
         heads = ent_emb[head_ids]  # (sample_size, d)
         tails = ent_emb[[sample[1]] * len(head_ids)]  # (sample_size, d)
-        rels = self.decoder.rel_emb[[sample[2]] * len(head_ids)]  # (sample_size, d, d)
 
-        # print(heads.shape, tails.shape, rels.shape)
-
-        scores = self.decoder.get_score(heads, tails, rels)
+        scores = self.decoder(heads, tails, [sample[2]] * len(head_ids))
 
         assert scores.shape == (len(head_ids), )
 

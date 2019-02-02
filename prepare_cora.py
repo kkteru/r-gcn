@@ -4,6 +4,7 @@ import torch
 import os
 import sys
 import pickle as pkl
+import pdb
 
 path = "./data/cora/"
 dataset = "cora"
@@ -34,6 +35,7 @@ idx_features_labels = np.genfromtxt("{}{}.content".format(path, dataset),
                                     dtype=np.dtype(str))
 features = sp.csr_matrix(idx_features_labels[:, 1:-1], dtype=np.float32)
 labels = encode_onehot(idx_features_labels[:, -1])
+pdb.set_trace()
 
 # build graph
 idx = np.array(idx_features_labels[:, 0], dtype=np.int32)
@@ -57,7 +59,7 @@ valid_idx = range(200, 500)
 test_idx = range(500, 1500)
 
 features = torch.FloatTensor(np.array(features.todense()))
-labels = torch.LongTensor(np.where(labels)[1])
+# labels = torch.LongTensor(np.where(labels)[1])
 
 train_idx = torch.LongTensor(train_idx)
 valid_idx = torch.LongTensor(valid_idx)

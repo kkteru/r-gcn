@@ -9,27 +9,15 @@ class DistMul(nn.Module):
         self.rel_emb = nn.Parameter(torch.empty((self.params.total_rel - 1) // 2, self.params.emb_dim), requires_grad=True)  # (R_, d) R_ is just the relations without the direction and self connection
         nn.init.xavier_uniform_(self.rel_emb.data)
 
-    def get_score(self, heads, tails, rels):
+    def forward(self, head_emb, tail_emb, batch_rel):
         '''
-        heads : (batch/sample_size, d)
-        tails : (batch/sample_size, d)
-        rels : (batch/sample_size, d)
-        '''
-
-        # print('calculating decoder scores...')
-        score = torch.sigmoid(torch.matmul(torch.matmul(heads.unsqueeze(-1).transpose(1, 2), torch.diag_embed(rels)), tails.unsqueeze(-1))).squeeze()
-
-        return score
-
-    def forward(self, batch_h, batch_t, batch_r, ent_emb):
-        '''
-        batch_h : (batch_size)
-        batch_r : (batch_size)
-        batch_t : (batch_size)
+        head_emb : (batch_size, d)
+        tail_emb : (batch_size, d)
+        batch_rel : (batch_size)
         ent_emb : (N, d)
         '''
-        heads = ent_emb[batch_h]  # (batch_size, d)
-        tails = ent_emb[batch_t]  # (batch_size, d)
-        rels = self.rel_emb[batch_r]  # (batch_size, d)
+        rels = self.rel_emb[batch_rel]  # (batch_size, d)
 
-        return self.get_score(heads, tails, rels)
+        score = torch.sigmoid(torch.matmul(torch.matmul(head_emb.unsqueeze(-1).transpose(1, 2), torch.diag_embed(rels)), tail_emb.unsqueeze(-1))).squeeze()  # (batch_size)
+
+        return score

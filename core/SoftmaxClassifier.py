@@ -1,6 +1,5 @@
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
 
 # n : n_class
 
@@ -11,17 +10,10 @@ class SoftmaxClassifier(nn.Module):
         self.params = params
         self.weights = nn.Parameter(torch.rand(self.params.emb_dim, self.params.n_class, requires_grad=True))  # (d, n)
 
-    def get_prediction(self, ent_emb, batch):
-        scores = torch.matmul(ent_emb[batch], self.weights)  # (batch_size, n)
-        pred = torch.argmax(scores, dim=-1)
-
-        return pred
-
-    def forward(self, ent_emb, batch):
+    def forward(self, ent_emb):
         '''
-        ent_emb: (N, d)
-        batch: (batch_size) Node indices which we need the softmax score for.
+        ent_emb: (batch_size, d)
         '''
-        scores = torch.matmul(ent_emb[batch], self.weights)  # (batch_size, n)
+        scores = torch.matmul(ent_emb, self.weights)  # (batch_size, n)
 
-        return scores  # F.log_softmax(scores, dim=1)
+        return scores

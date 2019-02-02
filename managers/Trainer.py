@@ -36,24 +36,18 @@ class Trainer():
 
     def classifier_one_step(self):
         train_batch = self.classifier_data['train_idx']  # (batch_size)
-        y = self.classifier_data['y']  # y: (batch_size, n)
+        y = self.classifier_data['y'][train_batch]  # y: (batch_size, n)
+        y = torch.LongTensor(np.array(np.argmax(y, axis=-1)).squeeze()).to(device=self.params.device)  # y: (batch_size)
 
         # pdb.set_trace()
 
         adj_mat = self.classifier_data['A']
 
-        if self.params.dataset == 'cora':
-            y = y[train_batch].to(device=self.params.device)
-        else:
-            y = torch.LongTensor(np.array(np.argmax(y[train_batch], axis=-1)).squeeze()).to(device=self.params.device)  # y: (batch_size)
-
         # pdb.set_trace()
         X = torch.Tensor(self.classifier_data['feat']).to(device=self.params.device)
         # pdb.set_trace()
-        # print(self.encoder.rel_trans)
         ent_emb = self.encoder(X, adj_mat)
-        # scores = ent_emb[train_batch]
-        scores = self.classifier(ent_emb, train_batch)
+        scores = self.classifier(ent_emb[train_batch])
 
         # pdb.set_trace()
 
@@ -75,7 +69,10 @@ class Trainer():
         X = self.link_data_sampler.X
 
         ent_emb = self.encoder(X, adj_mat)
-        score = self.decoder(batch_h, batch_t, batch_r, ent_emb)
+
+        head_emb = ent_emb[batch_h]
+        tail_emb = ent_emb[batch_t]
+        score = self.decoder(head_emb, tail_emb, batch_r)
 
         pos_score = score[0: int(len(score) / 2)]
         neg_score = score[int(len(score) / 2): len(score)]
@@ -89,8 +86,6 @@ class Trainer():
         loss.backward()
         nn.utils.clip_grad_norm_(self.model_params, self.params.clip)
         self.optimizer.step()
-
-        # print(self.decoder.rel_emb)
 
         return loss
 

@@ -12,8 +12,6 @@ parser = argparse.ArgumentParser(description='TransE model')
 
 parser.add_argument("--experiment_name", type=str, default="default",
                     help="A folder with this name would be created to dump saved models and log files")
-parser.add_argument("--dataset", type=str, default="aifb",
-                    help="Dataset string ('aifb', 'mutag', 'bgs', 'am')")
 
 parser.add_argument("--nEpochs", type=int, default=10,
                     help="Learning rate of the optimizer")
@@ -24,7 +22,7 @@ parser.add_argument("--eval_every", type=int, default=25,
 parser.add_argument("--save_every", type=int, default=50,
                     help="Interval of epochs to save a checkpoint of the model?")
 
-parser.add_argument("--sample_size", type=int, default=30,
+parser.add_argument("--neg_sample_size", type=int, default=30,
                     help="No. of negative samples to compare to for MRR/MR/Hit@10")
 parser.add_argument("--patience", type=int, default=10,
                     help="Early stopping patience")
@@ -55,9 +53,6 @@ parser.add_argument("--no_encoder", type=bool_flag, default=False,
 parser.add_argument('--disable-cuda', action='store_true',
                     help='Disable CUDA')
 
-parser.add_argument('--use_pygcn', action='store_true',
-                    help='Disable CUDA')
-
 
 params = parser.parse_args()
 
@@ -69,18 +64,20 @@ if not params.disable_cuda and torch.cuda.is_available():
 else:
     params.device = torch.device('cpu')
 
+logging.info(params.device)
+
 link_train_data_sampler = DataSampler(params, TRAIN_DATA_PATH, params.debug)
 link_valid_data_sampler = DataSampler(params, VALID_DATA_PATH)
 
 params.total_rel = 475
 params.total_ent = 14541
 
-# logging.info('Loaded %s dataset with %d entities and %d relations' % (params.dataset, params.total_ent, params.total_rel))
+logging.info('Loaded %d entities and %d relations' % (params.total_ent, params.total_rel))
 
 gcn, distmul, _ = initialize_model(params)
 
 trainer = Trainer(params, gcn, distmul, None, None, link_train_data_sampler)
-evaluator = Evaluator(params, gcn, distmul, None, None, link_valid_data_sampler, params.sample_size)
+evaluator = Evaluator(params, gcn, distmul, None, None, link_valid_data_sampler, params.neg_sample_size)
 
 batch_size = int(len(link_train_data_sampler.data) / params.nBatches)
 
@@ -98,8 +95,6 @@ for e in range(params.nEpochs):
 
     logging.info('Epoch %d with loss: %f and emb norm %f in %f'
                  % (e, loss, torch.mean(trainer.encoder.ent_emb), toc - tic))
-    if trainer.encoder.rel_trans.grad is not None:
-        print('GCN relation weight gradients sum: ', torch.sum(trainer.encoder.rel_trans.grad))
 
     if (e + 1) % params.eval_every == 0:
         log_data = evaluator.link_log_data()
