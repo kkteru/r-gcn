@@ -10,6 +10,6 @@ PyToch implementation of R-GCN model for node classification and link prediction
 - [x] Complete the evaluation scripts to save checkpoints and best model
 - [ ] Evaluation scripts
 - [ ] Revamp GCN into configurable layers
-- [ ] Refactor into Encoder and Decoder hierarchical structure with Aggregator and possible sampling
+- [ ] Refactor into Encoder and Decoder hierarchical structure with Aggregator and possibly neighbor sampling
 
 Requirements: rdflib, wget, scipy, sklearn
