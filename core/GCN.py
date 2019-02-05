@@ -12,9 +12,10 @@ class GCN(nn.Module):
         self.params = params
         self.n_layers = self.params.gcn_layers
         self.ent_emb = nn.Parameter(torch.empty(self.params.feat_in, self.params.emb_dim), requires_grad=True)  # (N, d)
-        self.rel_trans = nn.Parameter(torch.empty(self.n_layers, self.params.total_rel, self.params.emb_dim, self.params.emb_dim), requires_grad=True)  # (R + 1 x d x d); + 1 for the self loop
         self.final_emb = None
-        nn.init.xavier_uniform_(self.rel_trans.data)
+        if not self.params.no_encoder:
+            self.rel_trans = nn.Parameter(torch.empty(self.n_layers, self.params.total_rel, self.params.emb_dim, self.params.emb_dim), requires_grad=True)  # (R + 1 x d x d); + 1 for the self loop
+            nn.init.xavier_uniform_(self.rel_trans.data)
         nn.init.xavier_uniform_(self.ent_emb.data)
 
     def forward(self, x, adj_mat):
