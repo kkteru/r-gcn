@@ -13,14 +13,17 @@ class Evaluator():
         self.neg_sample_size = neg_sample_size if neg_sample_size != 0 else len(link_data_sampler.data)
         self.params = params
 
-    def classifier_log_data(self):
-        valid_idx = self.classification_data['valid_idx']
+    def classifier_log_data(self, data='valid'):
+        if data == 'valid':
+            idx = self.classification_data['valid_idx']
+        elif data == 'test':
+            idx = self.classification_data['test_idx']
 
         # pdb.set_trace()
         ent_emb = self.encoder.final_emb
-        pred = self.classifier(ent_emb[valid_idx])
+        pred = self.classifier(ent_emb[idx])
 
-        acc = np.mean(pred.cpu().numpy() == np.argmax(self.classification_data['y'][valid_idx], axis=1).squeeze())
+        acc = np.mean(np.argmax(pred.detach().cpu().numpy(), axis=1) == np.argmax(self.classification_data['y'][idx], axis=1).squeeze())
 
         log_data = dict([
             ('acc', acc)])
