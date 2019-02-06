@@ -16,6 +16,8 @@ parser.add_argument("--no_encoder", type=bool_flag, default=False,
                     help="Run the code in debug mode?")
 parser.add_argument('--disable-cuda', action='store_true',
                     help='Disable CUDA')
+parser.add_argument("--neg_sample_size", type=int, default=30,
+                    help="No. of negative samples to compare to for MRR/MR/Hit@10")
 
 params = parser.parse_args()
 
@@ -32,7 +34,7 @@ params.exp_dir = os.path.join(exps_dir, params.experiment_name)
 
 test_data_sampler = DataSampler(params, TEST_DATA_PATH)
 gcn, distmul, _ = initialize_model(params)
-evaluator = Evaluator(params, gcn, distmul, None, None, test_data_sampler, 30)
+evaluator = Evaluator(params, gcn, distmul, None, None, test_data_sampler, params.neg_sample_size)
 
 logging.info('Testing model %s' % os.path.join(params.exp_dir, 'best_model.pth'))
 
