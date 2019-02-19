@@ -29,9 +29,7 @@ class DistMult(nn.Module):
 
         distList = torch.matmul(c_e, ent_dict.transpose(0, 1))  # (B x |E|)
 
-        rankList = torch.argsort(distList, dim=1)
-
-        return rankList
+        return distList
 
     def forward(self, head_emb, tail_emb, batch_rel):
         '''

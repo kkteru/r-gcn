@@ -30,9 +30,10 @@ class Evaluator():
 
         if eval_mode == 'head' or eval_mode == 'avg':
 
-            rankArrayHead = self.decoder.get_all_scores(self.encoder.final_emb.data, self.link_data_sampler.data[:, 0],
+            distArrayHead = self.decoder.get_all_scores(self.encoder.final_emb.data, self.link_data_sampler.data[:, 0],
                                                         self.link_data_sampler.data[:, 1], self.link_data_sampler.data[:, 2],
                                                         'head').cpu().numpy()
+            rankArrayHead = np.argsort(distArrayHead, axis=1)
 
             # Don't check whether it is false negative
             rankListHead = [int(np.argwhere(elem[1] == elem[0])) for elem in zip(self.link_data_sampler.data[:, 0], rankArrayHead)]
@@ -51,9 +52,10 @@ class Evaluator():
 # -------------------------------------------------------------------- #
 
         if eval_mode == 'tail' or eval_mode == 'avg':
-            rankArrayTail = self.decoder.get_all_scores(self.encoder.final_emb.data, self.link_data_sampler.data[:, 0],
+            distArrayTail = self.decoder.get_all_scores(self.encoder.final_emb.data, self.link_data_sampler.data[:, 0],
                                                         self.link_data_sampler.data[:, 1], self.link_data_sampler.data[:, 2],
                                                         'tail').cpu().numpy()
+            rankArrayTail = np.argsort(distArrayTail, axis=1)
 
             # Don't check whether it is false negative
             rankListTail = [int(np.argwhere(elem[1] == elem[0])) for elem in zip(self.link_data_sampler.data[:, 1], rankArrayTail)]
