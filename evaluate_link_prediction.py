@@ -33,6 +33,9 @@ else:
 
 logging.info(params.device)
 
+params.total_rel = 1345
+params.total_ent = 14951
+
 exps_dir = os.path.join(MAIN_DIR, 'experiments')
 params.exp_dir = os.path.join(exps_dir, params.experiment_name)
 
