@@ -35,7 +35,7 @@ class Evaluator():
         if eval_mode == 'head' or eval_mode == 'avg':
             c_h_e = t_e - r_e
 
-            distHead = pairwise_distances(c_h_e, self.encoder.final_emb.weight.data.cpu().numpy(), metric='manhattan')
+            distHead = pairwise_distances(c_h_e, self.encoder.final_emb.data.cpu().numpy(), metric='manhattan')
 
             rankArrayHead = np.argsort(distHead, axis=1)
 
@@ -58,7 +58,7 @@ class Evaluator():
         if eval_mode == 'tail' or eval_mode == 'avg':
             c_t_e = h_e + r_e
 
-            distTail = pairwise_distances(c_t_e, self.model.ent_embeddings.weight.data.cpu().numpy(), metric='manhattan')
+            distTail = pairwise_distances(c_t_e, self.model.ent_embeddings.data.cpu().numpy(), metric='manhattan')
 
             rankArrayTail = np.argsort(distTail, axis=1)
 
