@@ -48,7 +48,7 @@ class Evaluator():
             assert len(rankListHead) == len(self.link_data_sampler.data)
 
             mr.append(np.mean(rankListHead))
-            mrr.append(np.mean(1 / rankListHead))
+            mrr.append(np.mean(1 / np.array(rankListHead)))
             hit10.append(len(isHit10ListHead) / len(rankListHead))
 
 # -------------------------------------------------------------------- #
@@ -71,7 +71,7 @@ class Evaluator():
             assert len(rankListTail) == len(self.link_data_sampler.data)
 
             mr.append(np.mean(rankListTail))
-            mrr.append(np.mean(1 / rankListTail))
+            mrr.append(np.mean(1 / np.array(rankListHead)))
             hit10.append(len(isHit10ListTail) / len(rankListTail))
 
         mr = np.mean(mr)
