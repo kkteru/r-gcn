@@ -2,6 +2,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import pdb
+
 # R: Total number of relations
 # N: Total number of entities (nodes)
 
