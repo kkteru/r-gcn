@@ -30,7 +30,7 @@ class Evaluator():
 
         if eval_mode == 'head' or eval_mode == 'avg':
 
-            rankArrayHead = self.decoder.get_all_scores(self.encoder.final_emb, self.link_data_sampler.data[:, 0],
+            rankArrayHead = self.decoder.get_all_scores(self.encoder.final_emb.data, self.link_data_sampler.data[:, 0],
                                                         self.link_data_sampler.data[:, 1], self.link_data_sampler.data[:, 2],
                                                         'head').cpu().numpy()
 
@@ -51,7 +51,7 @@ class Evaluator():
 # -------------------------------------------------------------------- #
 
         if eval_mode == 'tail' or eval_mode == 'avg':
-            rankArrayTail = self.decoder.get_all_scores(self.encoder.final_emb, self.link_data_sampler.data[:, 0],
+            rankArrayTail = self.decoder.get_all_scores(self.encoder.final_emb.data, self.link_data_sampler.data[:, 0],
                                                         self.link_data_sampler.data[:, 1], self.link_data_sampler.data[:, 2],
                                                         'tail').cpu().numpy()
 
