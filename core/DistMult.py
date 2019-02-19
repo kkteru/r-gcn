@@ -19,7 +19,7 @@ class DistMult(nn.Module):
 
         h_e = ent_dict[batch_h]  # (B x d)
         t_e = ent_dict[batch_t]  # (B x d)
-        r_e = self.rel_emb[batch_h]  # (B x d)
+        r_e = self.rel_emb[batch_rel]  # (B x d)
 
         if mode == 'head':
             c_e = torch.matmul(torch.diag_embed(r_e), t_e.unsqueeze(-1)).squeeze()  # (B x d)
