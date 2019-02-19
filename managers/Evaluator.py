@@ -25,9 +25,9 @@ class Evaluator():
     def get_log_data(self, eval_mode='head'):
         # pdb.set_trace()
 
-        h_e = self.encoder.final_emb.weight.data.cpu().numpy()[self.link_data_sampler.data[:, 0]]
-        t_e = self.encoder.final_emb.weight.data.cpu().numpy()[self.link_data_sampler.data[:, 1]]
-        r_e = self.encoder.final_emb.weight.data.cpu().numpy()[self.link_data_sampler.data[:, 2]]
+        h_e = self.encoder.final_emb.data.cpu().numpy()[self.link_data_sampler.data[:, 0]]
+        t_e = self.encoder.final_emb.data.cpu().numpy()[self.link_data_sampler.data[:, 1]]
+        r_e = self.encoder.final_emb.data.cpu().numpy()[self.link_data_sampler.data[:, 2]]
 
         mr = []
         hit10 = []
