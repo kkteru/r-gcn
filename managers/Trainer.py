@@ -36,7 +36,6 @@ class Trainer():
         batch_h, batch_t, batch_r = self.link_data_sampler.get_batch(n_batch)
         adj_mat = self.link_data_sampler.adj_mat
         X = self.link_data_sampler.X
-
         ent_emb = self.encoder(X, adj_mat)
 
         head_emb = ent_emb[batch_h]
@@ -48,7 +47,6 @@ class Trainer():
 
         # y = torch.ones(len(score))
         # y[int(len(score) / 2): len(score)] = 0
-
         # loss = F.binary_cross_entropy(score, y, reduction='sum')
         loss = self.criterion(pos_score, neg_score, torch.Tensor([-1]).to(device=self.params.device))
         self.optimizer.zero_grad()
@@ -61,7 +59,7 @@ class Trainer():
     def save_link_predictor(self, log_data):
         if log_data['mr'] < self.best_mr:
             torch.save(self.encoder, os.path.join(self.params.exp_dir, 'best_gcn.pth'))  # Does it overwrite or fuck with the existing file?
-            torch.save(self.decoder, os.path.join(self.params.exp_dir, 'best_distmul.pth'))  # Does it overwrite or fuck with the existing file?
+            torch.save(self.decoder, os.path.join(self.params.exp_dir, 'best_distmult.pth'))  # Does it overwrite or fuck with the existing file?
             logging.info('Better models found w.r.t MR. Saved it!')
             self.best_mr = log_data['mr']
         else:

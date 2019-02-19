@@ -1,5 +1,6 @@
 import logging
 import random
+import pdb
 
 import numpy as np
 import scipy.sparse as sp
@@ -27,24 +28,24 @@ class DataSampler():
             self.all_data = np.array([list(map(int, sample.split())) for sample in f.read().split('\n')[1:end]], dtype=np.int64)
         assert self.all_data.shape[1] == 3
 
-        r = 1345
-        e = 14951
-
         # Build graph
         self.adj_mat = []
-        for i in range(r):
-            idx = np.argwhere(self.data[:, 2] == r)
-            adj = sp.csr_matrix((np.ones(len(idx)) / len(idx), (self.data[:, 0][idx].squeeze(), self.data[:, 1][idx].squeeze())), shape=(e, e))
+        for i in range(self.params.total_rel):
+            # pdb.set_trace()
+            idx = np.argwhere(self.data[:, 2] == i)
+            adj = sp.csr_matrix((np.ones(len(idx)) / len(idx), (self.data[:, 0][idx].squeeze(1), self.data[:, 1][idx].squeeze(1))), shape=(self.params.total_ent, self.params.total_ent))
             self.adj_mat.append(adj)
             self.adj_mat.append(adj.T)
         self.adj_mat.append(sp.identity(self.adj_mat[0].shape[0]).tocsr())  # add identity matrix
 
         self.adj_mat = list(map(get_torch_sparse_matrix, self.adj_mat, [self.params.device] * len(self.adj_mat)))
 
+        self.data_set = set(map(tuple, self.data))
+        self.all_data_set = set(map(tuple, self.all_data))
         self.ent = self.get_ent(self.data)
         self.rel = self.get_rel(self.data)
 
-        self.X = torch.eye(14541).to(device=self.params.device)
+        self.X = torch.eye(self.params.total_ent).to(device=self.params.device)
 
         self.batch_size = int(len(self.data) / nBatches)
 

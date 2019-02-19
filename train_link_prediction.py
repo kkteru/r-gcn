@@ -39,7 +39,7 @@ parser.add_argument("--margin", type=int, default=1,
 
 parser.add_argument("--emb_dim", type=int, default=50,
                     help="Entity embedding size")
-parser.add_argument("--feat_in", type=int, default=14541,
+parser.add_argument("--feat_in", type=int, default=14951,
                     help="Entity embedding size")
 parser.add_argument("--gcn_layers", type=int, default=1,
                     help="Number of GCN layers")
@@ -68,13 +68,16 @@ else:
 
 logging.info(params.device)
 
+params.total_rel = 1345
+params.total_ent = 14951
+
 link_train_data_sampler = DataSampler(params, TRAIN_DATA_PATH, ALL_DATA_PATH, params.nBatches, params.debug)
 link_valid_data_sampler = DataSampler(params, VALID_DATA_PATH, ALL_DATA_PATH,)
 
-gcn, distmul = initialize_model(params)
+gcn, distmult = initialize_model(params)
 
-trainer = Trainer(params, gcn, distmul, link_train_data_sampler)
-evaluator = Evaluator(params, gcn, distmul, link_valid_data_sampler)
+trainer = Trainer(params, gcn, distmult, link_train_data_sampler)
+evaluator = Evaluator(params, gcn, distmult, link_valid_data_sampler)
 
 batch_size = int(len(link_train_data_sampler.data) / params.nBatches)
 
@@ -109,4 +112,4 @@ for e in range(params.nEpochs):
             break
     if (e + 1) % params.save_every == 0:
         torch.save(gcn, os.path.join(params.exp_dir, 'gcn_checkpoint.pth'))
-        torch.save(distmul, os.path.join(params.exp_dir, 'distmul_checkpoint.pth'))
+        torch.save(distmult, os.path.join(params.exp_dir, 'distmult_checkpoint.pth'))

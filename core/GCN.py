@@ -15,7 +15,7 @@ class GCN(nn.Module):
         self.ent_emb = nn.Parameter(torch.empty(self.params.feat_in, self.params.emb_dim), requires_grad=True)  # (N, d)
         self.final_emb = None
         if not self.params.no_encoder:
-            self.rel_trans = nn.Parameter(torch.empty(self.n_layers, self.params.total_rel, self.params.emb_dim, self.params.emb_dim), requires_grad=True)  # (R + 1 x d x d); + 1 for the self loop
+            self.rel_trans = nn.Parameter(torch.empty(self.n_layers, 2 * self.params.total_rel + 1, self.params.emb_dim, self.params.emb_dim), requires_grad=True)  # (R + 1 x d x d); + 1 for the self loop
             nn.init.xavier_uniform_(self.rel_trans.data)
         nn.init.xavier_uniform_(self.ent_emb.data)
 
@@ -26,7 +26,7 @@ class GCN(nn.Module):
         emb = self.ent_emb
         emb = torch.matmul(x, emb)
         if not self.params.no_encoder:
-            emb_acc = torch.empty(self.params.total_rel, self.params.total_ent, self.params.emb_dim).to(device=self.params.device)  # (R + 1 X N X d)
+            emb_acc = torch.empty(2 * self.params.total_rel + 1, self.params.total_ent, self.params.emb_dim).to(device=self.params.device)  # (R + 1 X N X d)
             for l in range(self.n_layers):
                 # pdb.set_trace()
                 for i, mat in enumerate(adj_mat):

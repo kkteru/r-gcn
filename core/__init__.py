@@ -1,3 +1,3 @@
 from .GCN import GCN
-from .DistMul import DistMul
+from .DistMult import DistMult
 from .DataSampler import DataSampler

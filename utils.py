@@ -6,7 +6,7 @@ import torch
 import pdb
 
 # import tensorflow as tf
-from core import DistMul, GCN
+from core import DistMult, GCN
 
 FALSY_STRINGS = {'off', 'false', '0'}
 TRUTHY_STRINGS = {'on', 'true', '1'}
@@ -60,14 +60,14 @@ def initialize_model(params):
     if os.path.exists(os.path.join(params.exp_dir, 'best_gcn.pth')):
         logging.info('Loading existing model from %s' % os.path.join(params.exp_dir, 'best_gcn.pth'))
         gcn = torch.load(os.path.join(params.exp_dir, 'best_gcn.pth'))  # Update these
-        logging.info('Loading existing model from %s' % os.path.join(params.exp_dir, 'best_distmul.pth'))
-        distmul = torch.load(os.path.join(params.exp_dir, 'best_distmul.pth'))  # Update these
+        logging.info('Loading existing model from %s' % os.path.join(params.exp_dir, 'best_distmult.pth'))
+        distmult = torch.load(os.path.join(params.exp_dir, 'best_distmult.pth'))  # Update these
     else:
         logging.info('No existing model found. Initializing new model..')
         gcn = GCN(params).to(device=params.device)
-        distmul = DistMul(params).to(device=params.device)
+        distmult = DistMult(params).to(device=params.device)
 
-    return gcn, distmul
+    return gcn, distmult
 
 
 # class Logger(object):
