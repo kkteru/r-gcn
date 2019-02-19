@@ -18,6 +18,10 @@ parser.add_argument('--disable-cuda', action='store_true',
                     help='Disable CUDA')
 parser.add_argument("--neg_sample_size", type=int, default=30,
                     help="No. of negative samples to compare to for MRR/MR/Hit@10")
+parser.add_argument('--filter', action='store_true',
+                    help='Filter the samples while evaluation')
+parser.add_argument('--eval_mode', type=str, default="head",
+                    help='Evaluate on head and/or tail prediction?')
 
 params = parser.parse_args()
 
@@ -32,11 +36,11 @@ logging.info(params.device)
 exps_dir = os.path.join(MAIN_DIR, 'experiments')
 params.exp_dir = os.path.join(exps_dir, params.experiment_name)
 
-test_data_sampler = DataSampler(params, TEST_DATA_PATH)
-gcn, distmul, _ = initialize_model(params)
-evaluator = Evaluator(params, gcn, distmul, None, None, test_data_sampler, params.neg_sample_size)
+test_data_sampler = DataSampler(params, TEST_DATA_PATH, ALL_DATA_PATH)
+gcn, distmul = initialize_model(params)
+evaluator = Evaluator(params, gcn, distmul, test_data_sampler)
 
-logging.info('Testing model %s' % os.path.join(params.exp_dir, 'best_model.pth'))
+logging.info('Testing models from %s' % os.path.join(params.exp_dir))
 
-log_data = evaluator.link_log_data()
+log_data = evaluator.get_log_data(params.eval_mode)
 logging.info('Test performance:' + str(log_data))

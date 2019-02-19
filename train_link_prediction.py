@@ -21,6 +21,10 @@ parser.add_argument("--eval_every", type=int, default=25,
                     help="Interval of epochs to evaluate the model?")
 parser.add_argument("--save_every", type=int, default=50,
                     help="Interval of epochs to save a checkpoint of the model?")
+parser.add_argument('--eval_mode', type=str, default="head",
+                    help='Evaluate on head and/or tail prediction?')
+parser.add_argument('--filter', action='store_true',
+                    help='Filter the samples while evaluation')
 
 parser.add_argument("--neg_sample_size", type=int, default=30,
                     help="No. of negative samples to compare to for MRR/MR/Hit@10")
@@ -52,8 +56,6 @@ parser.add_argument("--no_encoder", type=bool_flag, default=False,
                     help="Run the code in debug mode?")
 parser.add_argument('--disable-cuda', action='store_true',
                     help='Disable CUDA')
-parser.add_argument('--filter', action='store_true',
-                    help='Filter the samples while evaluation')
 
 
 params = parser.parse_args()
