@@ -26,6 +26,7 @@ class Evaluator():
         # pdb.set_trace()
 
         mr = []
+        mrr = []
         hit10 = []
 
         if eval_mode == 'head' or eval_mode == 'avg':
@@ -47,6 +48,7 @@ class Evaluator():
             assert len(rankListHead) == len(self.link_data_sampler.data)
 
             mr.append(np.mean(rankListHead))
+            mrr.append(np.mean(1 / rankListHead))
             hit10.append(len(isHit10ListHead) / len(rankListHead))
 
 # -------------------------------------------------------------------- #
@@ -69,13 +71,16 @@ class Evaluator():
             assert len(rankListTail) == len(self.link_data_sampler.data)
 
             mr.append(np.mean(rankListTail))
+            mrr.append(np.mean(1 / rankListTail))
             hit10.append(len(isHit10ListTail) / len(rankListTail))
 
         mr = np.mean(mr)
+        mrr = np.mean(mrr)
         hit10 = np.mean(hit10)
 
         log_data = dict([
             ('hit@10', hit10),
-            ('mr', mr)])
+            ('mr', mr),
+            ('mrr', mrr)])
 
         return log_data
