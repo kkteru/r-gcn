@@ -18,7 +18,7 @@ class Evaluator():
     def _filter(self, head, tail, rel, array, rank, h):
         filtered_rank = rank
         for i in range(rank):
-            if (head * (1 - h) + array[i] * h, array[i] * (1 - h) + tail * h, rel) in self.data_sampler.all_data:
+            if (head * (1 - h) + array[i] * h, array[i] * (1 - h) + tail * h, rel) in self.link_data_sampler.all_data:
                 filtered_rank = filtered_rank - 1
         return filtered_rank
 
@@ -40,15 +40,15 @@ class Evaluator():
             rankArrayHead = np.argsort(distHead, axis=1)
 
             # Don't check whether it is false negative
-            rankListHead = [int(np.argwhere(elem[1] == elem[0])) for elem in zip(self.data_sampler.data[:, 0], rankArrayHead)]
+            rankListHead = [int(np.argwhere(elem[1] == elem[0])) for elem in zip(self.link_data_sampler.data[:, 0], rankArrayHead)]
             if self.params.filter:
                 rankListHead = [int(self._filter(elem[0], elem[1], elem[2], elem[3], elem[4], h=1))
-                                for elem in zip(self.data_sampler.data[:, 0], self.data_sampler.data[:, 1],
-                                                self.data_sampler.data[:, 2], rankArrayHead, rankListHead)]
+                                for elem in zip(self.link_data_sampler.data[:, 0], self.link_data_sampler.data[:, 1],
+                                                self.link_data_sampler.data[:, 2], rankArrayHead, rankListHead)]
 
             isHit10ListHead = [x for x in rankListHead if x < 10]
 
-            assert len(rankListHead) == len(self.data_sampler.data)
+            assert len(rankListHead) == len(self.link_data_sampler.data)
 
             mr.append(np.mean(rankListHead))
             hit10.append(len(isHit10ListHead) / len(rankListHead))
@@ -63,15 +63,15 @@ class Evaluator():
             rankArrayTail = np.argsort(distTail, axis=1)
 
             # Don't check whether it is false negative
-            rankListTail = [int(np.argwhere(elem[1] == elem[0])) for elem in zip(self.data_sampler.data[:, 1], rankArrayTail)]
+            rankListTail = [int(np.argwhere(elem[1] == elem[0])) for elem in zip(self.link_data_sampler.data[:, 1], rankArrayTail)]
             if self.params.filter:
                 rankListTail = [int(self._filter(elem[0], elem[1], elem[2], elem[3], elem[4], h=0))
-                                for elem in zip(self.data_sampler.data[:, 0], self.data_sampler.data[:, 1],
-                                                self.data_sampler.data[:, 2], rankArrayTail, rankListTail)]
+                                for elem in zip(self.link_data_sampler.data[:, 0], self.link_data_sampler.data[:, 1],
+                                                self.link_data_sampler.data[:, 2], rankArrayTail, rankListTail)]
 
             isHit10ListTail = [x for x in rankListTail if x < 10]
 
-            assert len(rankListTail) == len(self.data_sampler.data)
+            assert len(rankListTail) == len(self.link_data_sampler.data)
 
             mr.append(np.mean(rankListTail))
             hit10.append(len(isHit10ListTail) / len(rankListTail))
