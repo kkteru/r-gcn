@@ -52,7 +52,7 @@ parser.add_argument("--n_class", type=int, default=4,
 
 parser.add_argument("--debug", type=bool_flag, default=False,
                     help="Run the code in debug mode?")
-parser.add_argument("--no_encoder", type=bool_flag, default=False,
+parser.add_argument("--no_encoder", action='store_true',
                     help="Run the code in debug mode?")
 parser.add_argument('--disable-cuda', action='store_true',
                     help='Disable CUDA')

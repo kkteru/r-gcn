@@ -25,19 +25,14 @@ class Evaluator():
     def get_log_data(self, eval_mode='head'):
         # pdb.set_trace()
 
-        h_e = self.encoder.final_emb.data.cpu().numpy()[self.link_data_sampler.data[:, 0]]
-        t_e = self.encoder.final_emb.data.cpu().numpy()[self.link_data_sampler.data[:, 1]]
-        r_e = self.encoder.final_emb.data.cpu().numpy()[self.link_data_sampler.data[:, 2]]
-
         mr = []
         hit10 = []
 
         if eval_mode == 'head' or eval_mode == 'avg':
-            c_h_e = t_e - r_e
 
-            distHead = pairwise_distances(c_h_e, self.encoder.final_emb.data.cpu().numpy(), metric='manhattan')
-
-            rankArrayHead = np.argsort(distHead, axis=1)
+            rankArrayHead = self.decoder.get_all_scores(self.encoder.final_emb, self.link_data_sampler.data[:, 0],
+                                                        self.link_data_sampler.data[:, 1], self.link_data_sampler.data[:, 2],
+                                                        'head').cpu().numpy()
 
             # Don't check whether it is false negative
             rankListHead = [int(np.argwhere(elem[1] == elem[0])) for elem in zip(self.link_data_sampler.data[:, 0], rankArrayHead)]
@@ -56,11 +51,9 @@ class Evaluator():
 # -------------------------------------------------------------------- #
 
         if eval_mode == 'tail' or eval_mode == 'avg':
-            c_t_e = h_e + r_e
-
-            distTail = pairwise_distances(c_t_e, self.model.ent_embeddings.data.cpu().numpy(), metric='manhattan')
-
-            rankArrayTail = np.argsort(distTail, axis=1)
+            rankArrayTail = self.decoder.get_all_scores(self.encoder.final_emb, self.link_data_sampler.data[:, 0],
+                                                        self.link_data_sampler.data[:, 1], self.link_data_sampler.data[:, 2],
+                                                        'tail').cpu().numpy()
 
             # Don't check whether it is false negative
             rankListTail = [int(np.argwhere(elem[1] == elem[0])) for elem in zip(self.link_data_sampler.data[:, 1], rankArrayTail)]
