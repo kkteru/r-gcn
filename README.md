@@ -13,5 +13,3 @@ PyToch implementation of R-GCN model for link prediction
 - L2 regularization on relation embeddings
 - Use Adagrad and hyperparametter tuning
 - Filter the rankings (efficiently!)
-
-Requirements: rdflib, wget, scipy, sklearn
