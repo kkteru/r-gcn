@@ -12,6 +12,8 @@ parser = argparse.ArgumentParser(description='TransE model')
 
 parser.add_argument("--experiment_name", type=str, default="default",
                     help="A folder with this name would be created to dump saved models and log files")
+parser.add_argument("--gpu", type=int, default=0,
+                    help="Which GPU to use?")
 
 parser.add_argument("--nEpochs", type=int, default=10,
                     help="Learning rate of the optimizer")
@@ -47,8 +49,6 @@ parser.add_argument("--feat_in", type=int, default=14951,
                     help="Entity embedding size")
 parser.add_argument("--gcn_layers", type=int, default=1,
                     help="Number of GCN layers")
-parser.add_argument("--n_class", type=int, default=4,
-                    help="Number of classes in classification task")
 
 parser.add_argument("--debug", type=bool_flag, default=False,
                     help="Run the code in debug mode?")
@@ -64,7 +64,7 @@ initialize_experiment(params)
 
 params.device = None
 if not params.disable_cuda and torch.cuda.is_available():
-    params.device = torch.device('cuda')
+    params.device = torch.device('cuda:%d' % params.gpu)
 else:
     params.device = torch.device('cpu')
 
@@ -76,10 +76,10 @@ params.total_ent = 14951
 link_train_data_sampler = DataSampler(params, TRAIN_DATA_PATH, ALL_DATA_PATH, params.nBatches, params.debug)
 link_valid_data_sampler = DataSampler(params, VALID_DATA_PATH, ALL_DATA_PATH,)
 
-gcn, distmult = initialize_model(params)
+enc, dec = initialize_model(params)
 
-trainer = Trainer(params, gcn, distmult, link_train_data_sampler)
-evaluator = Evaluator(params, gcn, distmult, link_valid_data_sampler)
+trainer = Trainer(params, enc, dec, link_train_data_sampler)
+evaluator = Evaluator(params, enc, dec, link_valid_data_sampler)
 
 batch_size = int(len(link_train_data_sampler.data) / params.nBatches)
 
@@ -97,12 +97,13 @@ for e in range(params.nEpochs):
 
     # tb_logger.scalar_summary('loss', loss, e)
 
-    logging.info('Epoch %d with loss: %f and emb norm %f in %f'
-                 % (e, res, torch.mean(trainer.encoder.ent_emb), toc - tic))
+    logging.info('Epoch %d with loss: %f in %f'
+                 % (e, res, toc - tic))
 
     if (e + 1) % params.eval_every == 0:
         tic = time.time()
-        log_data = evaluator.get_log_data(params.eval_mode)
+        ent_emb = trainer.get_embeddings()
+        log_data = evaluator.get_log_data(ent_emb, params.eval_mode)
         toc = time.time()
         logging.info('Performance: %s in %f' % (str(log_data), (toc - tic)))
 
@@ -113,5 +114,5 @@ for e in range(params.nEpochs):
         if not to_continue:
             break
     if (e + 1) % params.save_every == 0:
-        torch.save(gcn, os.path.join(params.exp_dir, 'gcn_checkpoint.pth'))
-        torch.save(distmult, os.path.join(params.exp_dir, 'distmult_checkpoint.pth'))
+        torch.save(enc, os.path.join(params.exp_dir, 'enc_checkpoint.pth'))
+        torch.save(dec, os.path.join(params.exp_dir, 'dec_checkpoint.pth'))

@@ -6,7 +6,7 @@ import torch
 import pdb
 
 # import tensorflow as tf
-from core import DistMult, GCN
+from core import DistMult, GCN, EmbLookUp
 
 FALSY_STRINGS = {'off', 'false', '0'}
 TRUTHY_STRINGS = {'on', 'true', '1'}
@@ -57,17 +57,20 @@ def initialize_experiment(params):
 
 def initialize_model(params):
 
-    if os.path.exists(os.path.join(params.exp_dir, 'best_gcn.pth')):
-        logging.info('Loading existing model from %s' % os.path.join(params.exp_dir, 'best_gcn.pth'))
-        gcn = torch.load(os.path.join(params.exp_dir, 'best_gcn.pth'))  # Update these
-        logging.info('Loading existing model from %s' % os.path.join(params.exp_dir, 'best_distmult.pth'))
-        distmult = torch.load(os.path.join(params.exp_dir, 'best_distmult.pth'))  # Update these
+    if os.path.exists(os.path.join(params.exp_dir, 'best_enc.pth')):
+        logging.info('Loading existing model from %s' % os.path.join(params.exp_dir, 'best_enc.pth'))
+        enc = torch.load(os.path.join(params.exp_dir, 'best_enc.pth'))  # Update these
+        logging.info('Loading existing model from %s' % os.path.join(params.exp_dir, 'best_dec.pth'))
+        dec = torch.load(os.path.join(params.exp_dir, 'best_dec.pth'))  # Update these
     else:
         logging.info('No existing model found. Initializing new model..')
-        gcn = GCN(params).to(device=params.device)
-        distmult = DistMult(params).to(device=params.device)
+        if params.no_encoder:
+            enc = EmbLookUp(params, params.feat_in).to(device=params.device)
+        else:
+            enc = GCN(params, params.feat_in).to(device=params.device)
+        dec = DistMult(params).to(device=params.device)
 
-    return gcn, distmult
+    return enc, dec
 
 
 # class Logger(object):

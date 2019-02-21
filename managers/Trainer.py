@@ -20,8 +20,8 @@ class Trainer():
         self.bad_count = 0
 
         self.criterion = nn.MarginRankingLoss(self.params.margin, reduction='sum')
-
-        self.model_params = list(self.encoder.parameters()) + (list(self.decoder.parameters()) if decoder is not None else list(self.classifier.parameters()))
+        pdb.set_trace()
+        self.model_params = list(self.encoder.parameters()) + list(self.decoder.parameters())
         logging.info('Total number of parameters: %d' % sum(map(lambda x: x.numel(), self.model_params)))
         # pdb.set_trace()
         if params.optimizer == "SGD":
@@ -29,14 +29,19 @@ class Trainer():
         if params.optimizer == "Adam":
             self.optimizer = optim.Adam(self.model_params, lr=params.lr)
 
+    def get_embeddings(self):
+
+        ent_emb = self.encoder(self.link_data_sampler.X, self.link_data_sampler.adj_mat)
+
+        return ent_emb
+
     def link_pred_one_step(self, n_batch):
         '''
         n_batch: scalar value
         '''
         batch_h, batch_t, batch_r = self.link_data_sampler.get_batch(n_batch)
-        adj_mat = self.link_data_sampler.adj_mat
-        X = self.link_data_sampler.X
-        ent_emb = self.encoder(X, adj_mat)
+
+        ent_emb = self.get_embeddings()
 
         head_emb = ent_emb[batch_h]
         tail_emb = ent_emb[batch_t]
@@ -58,8 +63,8 @@ class Trainer():
 
     def save_link_predictor(self, log_data):
         if log_data['mr'] < self.best_mr:
-            torch.save(self.encoder, os.path.join(self.params.exp_dir, 'best_gcn.pth'))  # Does it overwrite or fuck with the existing file?
-            torch.save(self.decoder, os.path.join(self.params.exp_dir, 'best_distmult.pth'))  # Does it overwrite or fuck with the existing file?
+            torch.save(self.encoder, os.path.join(self.params.exp_dir, 'best_enc.pth'))  # Does it overwrite or fuck with the existing file?
+            torch.save(self.decoder, os.path.join(self.params.exp_dir, 'best_dec.pth'))  # Does it overwrite or fuck with the existing file?
             logging.info('Better models found w.r.t MR. Saved it!')
             self.best_mr = log_data['mr']
         else:

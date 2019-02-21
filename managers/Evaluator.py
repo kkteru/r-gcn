@@ -1,4 +1,3 @@
-from sklearn.metrics.pairwise import pairwise_distances
 import numpy as np
 import pdb
 
@@ -22,7 +21,7 @@ class Evaluator():
                 filtered_rank = filtered_rank - 1
         return filtered_rank
 
-    def get_log_data(self, eval_mode='head'):
+    def get_log_data(self, ent_emb, eval_mode='head'):
         # pdb.set_trace()
 
         mr = []
@@ -31,19 +30,19 @@ class Evaluator():
 
         if eval_mode == 'head' or eval_mode == 'avg':
 
-            distArrayHead = self.decoder.get_all_scores(self.encoder.final_emb.data, self.link_data_sampler.data[:, 0],
+            distArrayHead = self.decoder.get_all_scores(ent_emb.data, self.link_data_sampler.data[:, 0],
                                                         self.link_data_sampler.data[:, 1], self.link_data_sampler.data[:, 2],
                                                         'head').cpu().numpy()
             rankArrayHead = np.argsort(distArrayHead, axis=1)
 
             # Don't check whether it is false negative
-            rankListHead = [int(np.argwhere(elem[1] == elem[0])) for elem in zip(self.link_data_sampler.data[:, 0], rankArrayHead)]
+            rankListHead = [int(np.argwhere(elem[1] == elem[0]) + 1) for elem in zip(self.link_data_sampler.data[:, 0], rankArrayHead)]
             if self.params.filter:
                 rankListHead = [int(self._filter(elem[0], elem[1], elem[2], elem[3], elem[4], h=1))
                                 for elem in zip(self.link_data_sampler.data[:, 0], self.link_data_sampler.data[:, 1],
                                                 self.link_data_sampler.data[:, 2], rankArrayHead, rankListHead)]
 
-            isHit10ListHead = [x for x in rankListHead if x < 10]
+            isHit10ListHead = [x for x in rankListHead if x <= 10]
 
             assert len(rankListHead) == len(self.link_data_sampler.data)
 
@@ -54,19 +53,19 @@ class Evaluator():
 # -------------------------------------------------------------------- #
 
         if eval_mode == 'tail' or eval_mode == 'avg':
-            distArrayTail = self.decoder.get_all_scores(self.encoder.final_emb.data, self.link_data_sampler.data[:, 0],
+            distArrayTail = self.decoder.get_all_scores(ent_emb.data, self.link_data_sampler.data[:, 0],
                                                         self.link_data_sampler.data[:, 1], self.link_data_sampler.data[:, 2],
                                                         'tail').cpu().numpy()
             rankArrayTail = np.argsort(distArrayTail, axis=1)
 
             # Don't check whether it is false negative
-            rankListTail = [int(np.argwhere(elem[1] == elem[0])) for elem in zip(self.link_data_sampler.data[:, 1], rankArrayTail)]
+            rankListTail = [int(np.argwhere(elem[1] == elem[0]) + 1) for elem in zip(self.link_data_sampler.data[:, 1], rankArrayTail)]
             if self.params.filter:
                 rankListTail = [int(self._filter(elem[0], elem[1], elem[2], elem[3], elem[4], h=0))
                                 for elem in zip(self.link_data_sampler.data[:, 0], self.link_data_sampler.data[:, 1],
                                                 self.link_data_sampler.data[:, 2], rankArrayTail, rankListTail)]
 
-            isHit10ListTail = [x for x in rankListTail if x < 10]
+            isHit10ListTail = [x for x in rankListTail if x <= 10]
 
             assert len(rankListTail) == len(self.link_data_sampler.data)
 
