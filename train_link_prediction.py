@@ -49,6 +49,8 @@ parser.add_argument("--feat_in", type=int, default=14951,
                     help="Entity embedding size")
 parser.add_argument("--gcn_layers", type=int, default=1,
                     help="Number of GCN layers")
+parser.add_argument("--n_basis", type=int, default=2,
+                    help="Number of basis functions to use for GCN weights")
 
 parser.add_argument("--debug", type=bool_flag, default=False,
                     help="Run the code in debug mode?")

@@ -20,7 +20,7 @@ class Trainer():
         self.bad_count = 0
 
         self.criterion = nn.MarginRankingLoss(self.params.margin, reduction='sum')
-        pdb.set_trace()
+        # pdb.set_trace()
         self.model_params = list(self.encoder.parameters()) + list(self.decoder.parameters())
         logging.info('Total number of parameters: %d' % sum(map(lambda x: x.numel(), self.model_params)))
         # pdb.set_trace()

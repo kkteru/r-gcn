@@ -65,6 +65,6 @@ class GCN(nn.Module):
         for layer in self.layers:
             out = layer(out, adj_mat_list)
             out = nn.ReLU(out)
-            out = F.normalize(out)
+            # out = F.normalize(out)
 
         return out
