@@ -12,7 +12,7 @@ FALSY_STRINGS = {'off', 'false', '0'}
 TRUTHY_STRINGS = {'on', 'true', '1'}
 
 MAIN_DIR = os.path.relpath(os.path.dirname(os.path.abspath(__file__)))
-DATA_PATH = os.path.join(MAIN_DIR, 'data/FB15K')
+DATA_PATH = os.path.join(MAIN_DIR, 'data/FB15K237')
 TRAIN_DATA_PATH = os.path.join(DATA_PATH, 'train2id.txt')
 VALID_DATA_PATH = os.path.join(DATA_PATH, 'valid2id.txt')
 TEST_DATA_PATH = os.path.join(DATA_PATH, 'test2id.txt')
@@ -67,7 +67,7 @@ def initialize_model(params):
         if params.no_encoder:
             enc = EmbLookUp(params, params.feat_in).to(device=params.device)
         else:
-            enc = GCN(params, params.feat_in).to(device=params.device)
+            enc = GCN(params, params.total_ent).to(device=params.device)
         dec = DistMult(params).to(device=params.device)
 
     return enc, dec

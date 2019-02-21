@@ -45,8 +45,6 @@ parser.add_argument("--margin", type=int, default=1,
 
 parser.add_argument("--emb_dim", type=int, default=50,
                     help="Entity embedding size")
-parser.add_argument("--feat_in", type=int, default=14951,
-                    help="Entity embedding size")
 parser.add_argument("--gcn_layers", type=int, default=1,
                     help="Number of GCN layers")
 parser.add_argument("--n_basis", type=int, default=2,
@@ -72,11 +70,12 @@ else:
 
 logging.info(params.device)
 
-params.total_rel = 1345
-params.total_ent = 14951
+params.total_rel = 237
+params.total_ent = 14541
 
 link_train_data_sampler = DataSampler(params, TRAIN_DATA_PATH, ALL_DATA_PATH, params.nBatches, params.debug)
 link_valid_data_sampler = DataSampler(params, VALID_DATA_PATH, ALL_DATA_PATH,)
+
 
 enc, dec = initialize_model(params)
 
