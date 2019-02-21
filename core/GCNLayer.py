@@ -34,7 +34,7 @@ class GCNLayer(nn.Module):
         adj_mat_list: (R x |E| x |E|)
         '''
 
-        rel_weights = torch.matmul(self.basis_coeff, self.basis_weights)  # (R x in_size x out_size)
+        rel_weights = torch.einsum('rb, bio -> rio', (self.basis_coeff, self.basis_weights))  # (R x in_size x out_size)
 
         # Aggregation (no explicit separation of Concat step here since we are simply averaging over all)
         emb_acc = torch.empty(self.n_rel, inp.shape[0], inp.shape[1]).to(device=self.params.device)
