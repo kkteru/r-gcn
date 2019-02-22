@@ -52,6 +52,7 @@ class GCN(nn.Module):
 
         if inp is None:
             self.node_init = nn.Parameter(torch.FloatTensor(params.total_ent, in_size))
+            nn.init.xavier_uniform_(self.node_init.data)
         else:
             self.node_init = inp
 
@@ -71,7 +72,7 @@ class GCN(nn.Module):
         out = self.node_init
         for layer in self.layers:
             out = layer(out, adj_mat_list)
-            out = nn.ReLU(out)
+            out = F.relu(out)
             # out = F.normalize(out)
 
         return out
