@@ -51,7 +51,7 @@ class GCN(nn.Module):
         assert len(self.layer_sizes) == params.gcn_layers
 
         if inp is None:
-            self.node_init = nn.Parameters(torch.FloatTensor(params.total_ent, in_size))
+            self.node_init = nn.Parameter(torch.FloatTensor(params.total_ent, in_size))
         else:
             self.node_init = inp
 
