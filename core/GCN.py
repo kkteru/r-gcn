@@ -30,16 +30,18 @@ class GCN(nn.Module):
         '''
         emb = self.ent_emb
         # emb = torch.matmul(x, emb)
-        emb_acc = torch.empty(2 * self.params.total_rel + 1, self.params.total_ent, self.params.emb_dim).to(device=self.params.device)  # (R + 1 X N X d)
+        # emb_acc = torch.empty(2 * self.params.total_rel + 1, self.params.total_ent, self.params.emb_dim).to(device=self.params.device)  # (R + 1 X N X d)
         for l in range(self.n_layers):
             # pdb.set_trace()
+            out = torch.zeros(self.params.total_ent, self.params.emb_dim).to(device=self.params.device)
             rel_trans = torch.einsum('rb, bio -> rio', (self.basis_coeff[l], self.basis_weights[l]))
             for i, mat in enumerate(adj_mat):
                 # pdb.set_trace()
-                emb_acc[i] = torch.sparse.mm(mat, emb).to(device=self.params.device)
+                emb_acc = torch.sparse.mm(mat, emb).to(device=self.params.device)
+                out += torch.matmul(emb_acc, rel_trans[i])
             # pdb.set_trace()
-            tmp = torch.matmul(rel_trans[l], emb_acc.transpose(1, 2)).transpose(1, 2)  # (R + 1 X N X d) Shoud be different weights for different layers?
-            emb = F.relu(torch.sum(tmp, dim=0))
+            # tmp = torch.matmul(rel_trans, emb_acc.transpose(1, 2)).transpose(1, 2)  # (R + 1 X N X d) Shoud be different weights for different layers?
+            emb = F.relu(out)
         emb = F.normalize(emb)
         self.final_emb = emb
         return emb
