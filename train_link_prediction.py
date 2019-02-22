@@ -70,8 +70,11 @@ else:
 
 logging.info(params.device)
 
-params.total_rel = 237
-params.total_ent = 14541
+# params.total_rel = 237
+# params.total_ent = 14541
+
+params.total_rel = 1345
+params.total_ent = 14951
 
 link_train_data_sampler = DataSampler(params, TRAIN_DATA_PATH, ALL_DATA_PATH, params.nBatches, params.debug)
 link_valid_data_sampler = DataSampler(params, VALID_DATA_PATH, ALL_DATA_PATH,)
