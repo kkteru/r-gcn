@@ -15,5 +15,5 @@ class EmbLookUp(nn.Module):
     def reset_parameters(self):
         nn.init.xavier_uniform_(self.ent_emb.data)
 
-    def forward(self, t1, t2):
+    def forward(self, t1):
         return F.normalize(self.ent_emb)
