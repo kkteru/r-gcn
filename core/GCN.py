@@ -1,3 +1,4 @@
+import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import pdb
@@ -41,7 +42,7 @@ from .GCNLayer import GCNLayer
 
 
 class GCN(nn.Module):
-    def __init__(self, params, in_size, layer_sizes=None):
+    def __init__(self, params, in_size, layer_sizes=None, inp=None):
         super(GCN, self).__init__()
 
         self.params = params
@@ -49,19 +50,25 @@ class GCN(nn.Module):
 
         assert len(self.layer_sizes) == params.gcn_layers
 
+        if inp is None:
+            self.node_init = nn.Parameters(torch.FloatTensor(params.total_ent, in_size))
+        else:
+            self.node_init = inp
+
         self.layers = nn.ModuleList()
 
-        _l = in_size
+        _l = self.node_init.shape[1]
+
         for l in self.layer_sizes:
             self.layers.append(GCNLayer(params, _l, l, 2 * self.params.total_rel + 1))
             _l = l
 
-    def forward(self, inp, adj_mat_list):
+    def forward(self, adj_mat_list):
         '''
         inp: (|E| x d)
         adj_mat_list: (R x |E| x |E|)
         '''
-        out = inp
+        out = self.node_init
         for layer in self.layers:
             out = layer(out, adj_mat_list)
             out = nn.ReLU(out)

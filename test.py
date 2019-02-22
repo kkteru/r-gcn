@@ -20,5 +20,4 @@ for i, a in enumerate(a_list):
     print(i)
     pdb.set_trace()
     emb_acc = torch.sparse.mm(a, inp)  # (|E| x inp_size)
-    r = 2 * rel[i]
-    out += torch.matmul(emb_acc, r)
+    out += torch.matmul(emb_acc, rel[i])

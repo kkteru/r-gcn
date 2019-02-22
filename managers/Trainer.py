@@ -31,7 +31,7 @@ class Trainer():
 
     def get_embeddings(self):
 
-        ent_emb = self.encoder(self.link_data_sampler.X, self.link_data_sampler.adj_mat)
+        ent_emb = self.encoder(self.link_data_sampler.adj_mat)
 
         return ent_emb
 
