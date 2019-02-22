@@ -15,9 +15,13 @@ class GCN(nn.Module):
         self.n_layers = self.params.gcn_layers
         self.ent_emb = nn.Parameter(torch.empty(self.params.total_ent, self.params.emb_dim), requires_grad=True)  # (N, d)
         self.final_emb = None
-        if not self.params.no_encoder:
-            self.rel_trans = nn.Parameter(torch.empty(self.n_layers, 2 * self.params.total_rel + 1, self.params.emb_dim, self.params.emb_dim), requires_grad=True)  # (R + 1 x d x d); + 1 for the self loop
-            nn.init.xavier_uniform_(self.rel_trans.data)
+        # self.rel_trans = nn.Parameter(torch.empty(self.n_layers, 2 * self.params.total_rel + 1, self.params.emb_dim, self.params.emb_dim), requires_grad=True)  # (R + 1 x d x d); + 1 for the self loop
+
+        self.basis_weights = nn.Parameter(torch.FloatTensor(self.n_layers, self.params.n_basis, self.in_size, self.out_size))
+        self.basis_coeff = nn.Parameter(torch.FloatTensor(self.n_layers, 2 * self.params.total_rel + 1, self.params.n_basis))
+
+        nn.init.xavier_uniform_(self.basis_weights.data)
+        nn.init.xavier_uniform_(self.basis_coeff.data)
         nn.init.xavier_uniform_(self.ent_emb.data)
 
     def forward(self, adj_mat):
@@ -26,17 +30,17 @@ class GCN(nn.Module):
         '''
         emb = self.ent_emb
         # emb = torch.matmul(x, emb)
-        if not self.params.no_encoder:
-            emb_acc = torch.empty(2 * self.params.total_rel + 1, self.params.total_ent, self.params.emb_dim).to(device=self.params.device)  # (R + 1 X N X d)
-            for l in range(self.n_layers):
+        emb_acc = torch.empty(2 * self.params.total_rel + 1, self.params.total_ent, self.params.emb_dim).to(device=self.params.device)  # (R + 1 X N X d)
+        for l in range(self.n_layers):
+            # pdb.set_trace()
+            rel_trans = torch.einsum('rb, bio -> rio', (self.basis_coeff[l], self.basis_weights[l]))
+            for i, mat in enumerate(adj_mat):
                 # pdb.set_trace()
-                for i, mat in enumerate(adj_mat):
-                    # pdb.set_trace()
-                    emb_acc[i] = torch.sparse.mm(mat, emb).to(device=self.params.device)
-                # pdb.set_trace()
-                tmp = torch.matmul(self.rel_trans[l], emb_acc.transpose(1, 2)).transpose(1, 2)  # (R + 1 X N X d) Shoud be different weights for different layers?
-                emb = F.relu(torch.sum(tmp, dim=0))
-            emb = F.normalize(emb)
+                emb_acc[i] = torch.sparse.mm(mat, emb).to(device=self.params.device)
+            # pdb.set_trace()
+            tmp = torch.matmul(rel_trans[l], emb_acc.transpose(1, 2)).transpose(1, 2)  # (R + 1 X N X d) Shoud be different weights for different layers?
+            emb = F.relu(torch.sum(tmp, dim=0))
+        emb = F.normalize(emb)
         self.final_emb = emb
         return emb
 
