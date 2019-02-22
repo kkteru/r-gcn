@@ -65,7 +65,7 @@ def initialize_model(params):
     else:
         logging.info('No existing model found. Initializing new model..')
         if params.no_encoder:
-            enc = EmbLookUp(params, params.emb_dim).to(device=params.device)
+            enc = EmbLookUp(params, params.total_ent).to(device=params.device)
         else:
             enc = GCN(params, params.emb_dim).to(device=params.device)
         dec = DistMult(params).to(device=params.device)
