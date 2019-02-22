@@ -34,11 +34,12 @@ class GCN(nn.Module):
         for l in range(self.n_layers):
             # pdb.set_trace()
             out = torch.zeros(self.params.total_ent, self.params.emb_dim).to(device=self.params.device)
-            rel_trans = torch.einsum('rb, bio -> rio', (self.basis_coeff[l], self.basis_weights[l]))
+            # rel_trans = torch.einsum('rb, bio -> rio', (self.basis_coeff[l], self.basis_weights[l]))
             for i, mat in enumerate(adj_mat):
                 # pdb.set_trace()
                 emb_acc = torch.sparse.mm(mat, emb).to(device=self.params.device)
-                out += torch.matmul(emb_acc, rel_trans[i])
+                rel_trans = torch.einsum('b, bio -> io', (self.basis_coeff[l][i], self.basis_weights[l]))
+                out += torch.matmul(emb_acc, rel_trans)
             # pdb.set_trace()
             # tmp = torch.matmul(rel_trans, emb_acc.transpose(1, 2)).transpose(1, 2)  # (R + 1 X N X d) Shoud be different weights for different layers?
             emb = F.relu(out)
