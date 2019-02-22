@@ -13,7 +13,7 @@ class GCN(nn.Module):
         super(GCN, self).__init__()
         self.params = params
         self.n_layers = self.params.gcn_layers
-        self.ent_emb = nn.Parameter(torch.empty(self.params.feat_in, self.params.emb_dim), requires_grad=True)  # (N, d)
+        self.ent_emb = nn.Parameter(torch.empty(self.params.total_ent, self.params.emb_dim), requires_grad=True)  # (N, d)
         self.final_emb = None
         if not self.params.no_encoder:
             self.rel_trans = nn.Parameter(torch.empty(self.n_layers, 2 * self.params.total_rel + 1, self.params.emb_dim, self.params.emb_dim), requires_grad=True)  # (R + 1 x d x d); + 1 for the self loop
