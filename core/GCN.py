@@ -17,7 +17,7 @@ class GCN(nn.Module):
         self.final_emb = None
         # self.rel_trans = nn.Parameter(torch.empty(self.n_layers, 2 * self.params.total_rel + 1, self.params.emb_dim, self.params.emb_dim), requires_grad=True)  # (R + 1 x d x d); + 1 for the self loop
 
-        self.basis_weights = nn.Parameter(torch.FloatTensor(self.n_layers, self.params.n_basis, self.in_size, self.out_size))
+        self.basis_weights = nn.Parameter(torch.FloatTensor(self.n_layers, self.params.n_basis, self.params.emb_dim, self.params.emb_dim))
         self.basis_coeff = nn.Parameter(torch.FloatTensor(self.n_layers, 2 * self.params.total_rel + 1, self.params.n_basis))
 
         nn.init.xavier_uniform_(self.basis_weights.data)
