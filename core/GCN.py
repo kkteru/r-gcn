@@ -8,78 +8,78 @@ from .GCNLayer import GCNLayer
 # N: Total number of entities (nodes)
 
 
-class GCN(nn.Module):
-    def __init__(self, params, t):
-        super(GCN, self).__init__()
-        self.params = params
-        self.n_layers = self.params.gcn_layers
-        self.ent_emb = nn.Parameter(torch.empty(self.params.total_ent, self.params.emb_dim), requires_grad=True)  # (N, d)
-        self.final_emb = None
-        # self.rel_trans = nn.Parameter(torch.empty(self.n_layers, 2 * self.params.total_rel + 1, self.params.emb_dim, self.params.emb_dim), requires_grad=True)  # (R + 1 x d x d); + 1 for the self loop
-
-        self.basis_weights = nn.Parameter(torch.FloatTensor(self.n_layers, self.params.n_basis, self.params.emb_dim, self.params.emb_dim))
-        self.basis_coeff = nn.Parameter(torch.FloatTensor(self.n_layers, 2 * self.params.total_rel + 1, self.params.n_basis))
-
-        nn.init.xavier_uniform_(self.basis_weights.data)
-        nn.init.xavier_uniform_(self.basis_coeff.data)
-        nn.init.xavier_uniform_(self.ent_emb.data)
-
-    def forward(self, adj_mat):
-        '''
-        A : list of sparse torch adjacency matrices
-        '''
-        emb = self.ent_emb
-        # emb = torch.matmul(x, emb)
-        # emb_acc = torch.empty(2 * self.params.total_rel + 1, self.params.total_ent, self.params.emb_dim).to(device=self.params.device)  # (R + 1 X N X d)
-        for l in range(self.n_layers):
-            # pdb.set_trace()
-            out = torch.zeros(self.params.total_ent, self.params.emb_dim).to(device=self.params.device)
-            # rel_trans = torch.einsum('rb, bio -> rio', (self.basis_coeff[l], self.basis_weights[l]))
-            for i, mat in enumerate(adj_mat):
-                # pdb.set_trace()
-                emb_acc = torch.sparse.mm(mat, emb).to(device=self.params.device)
-                rel_trans = torch.einsum('b, bio -> io', (self.basis_coeff[l][i], self.basis_weights[l]))
-                out += torch.matmul(emb_acc, rel_trans)
-            # pdb.set_trace()
-            # tmp = torch.matmul(rel_trans, emb_acc.transpose(1, 2)).transpose(1, 2)  # (R + 1 X N X d) Shoud be different weights for different layers?
-            emb = F.relu(out)
-        emb = F.normalize(emb)
-        self.final_emb = emb
-        return emb
-
-
 # class GCN(nn.Module):
-#     def __init__(self, params, in_size, layer_sizes=None, inp=None):
+#     def __init__(self, params, t):
 #         super(GCN, self).__init__()
-
 #         self.params = params
-#         self.layer_sizes = [self.params.emb_dim] * self.params.gcn_layers if layer_sizes is None else layer_sizes
+#         self.n_layers = self.params.gcn_layers
+#         self.ent_emb = nn.Parameter(torch.empty(self.params.total_ent, self.params.emb_dim), requires_grad=True)  # (N, d)
+#         self.final_emb = None
+#         # self.rel_trans = nn.Parameter(torch.empty(self.n_layers, 2 * self.params.total_rel + 1, self.params.emb_dim, self.params.emb_dim), requires_grad=True)  # (R + 1 x d x d); + 1 for the self loop
 
-#         assert len(self.layer_sizes) == params.gcn_layers
+#         self.basis_weights = nn.Parameter(torch.FloatTensor(self.n_layers, self.params.n_basis, self.params.emb_dim, self.params.emb_dim))
+#         self.basis_coeff = nn.Parameter(torch.FloatTensor(self.n_layers, 2 * self.params.total_rel + 1, self.params.n_basis))
 
-#         if inp is None:
-#             self.node_init = nn.Parameter(torch.FloatTensor(params.total_ent, in_size))
-#             nn.init.xavier_uniform_(self.node_init.data)
-#         else:
-#             self.node_init = inp
+#         nn.init.xavier_uniform_(self.basis_weights.data)
+#         nn.init.xavier_uniform_(self.basis_coeff.data)
+#         nn.init.xavier_uniform_(self.ent_emb.data)
 
-#         self.layers = nn.ModuleList()
-
-#         _l = self.node_init.shape[1]
-
-#         for l in self.layer_sizes:
-#             self.layers.append(GCNLayer(params, _l, l, 2 * self.params.total_rel + 1))
-#             _l = l
-
-#     def forward(self, adj_mat_list):
+#     def forward(self, adj_mat):
 #         '''
-#         inp: (|E| x d)
-#         adj_mat_list: (R x |E| x |E|)
+#         A : list of sparse torch adjacency matrices
 #         '''
-#         out = self.node_init
-#         for layer in self.layers:
-#             out = layer(out, adj_mat_list)
-#             out = F.relu(out)
-#             # out = F.normalize(out)
+#         emb = self.ent_emb
+#         # emb = torch.matmul(x, emb)
+#         # emb_acc = torch.empty(2 * self.params.total_rel + 1, self.params.total_ent, self.params.emb_dim).to(device=self.params.device)  # (R + 1 X N X d)
+#         for l in range(self.n_layers):
+#             # pdb.set_trace()
+#             out = torch.zeros(self.params.total_ent, self.params.emb_dim).to(device=self.params.device)
+#             # rel_trans = torch.einsum('rb, bio -> rio', (self.basis_coeff[l], self.basis_weights[l]))
+#             for i, mat in enumerate(adj_mat):
+#                 # pdb.set_trace()
+#                 emb_acc = torch.sparse.mm(mat, emb).to(device=self.params.device)
+#                 rel_trans = torch.einsum('b, bio -> io', (self.basis_coeff[l][i], self.basis_weights[l]))
+#                 out += torch.matmul(emb_acc, rel_trans)
+#             # pdb.set_trace()
+#             # tmp = torch.matmul(rel_trans, emb_acc.transpose(1, 2)).transpose(1, 2)  # (R + 1 X N X d) Shoud be different weights for different layers?
+#             emb = F.relu(out)
+#         emb = F.normalize(emb)
+#         self.final_emb = emb
+#         return emb
 
-#         return out
+
+class GCN(nn.Module):
+    def __init__(self, params, in_size, layer_sizes=None, inp=None):
+        super(GCN, self).__init__()
+
+        self.params = params
+        self.layer_sizes = [self.params.emb_dim] * self.params.gcn_layers if layer_sizes is None else layer_sizes
+
+        assert len(self.layer_sizes) == params.gcn_layers
+
+        if inp is None:
+            self.node_init = nn.Parameter(torch.FloatTensor(params.total_ent, in_size))
+            nn.init.xavier_uniform_(self.node_init.data)
+        else:
+            self.node_init = inp
+
+        self.layers = nn.ModuleList()
+
+        _l = self.node_init.shape[1]
+
+        for l in self.layer_sizes:
+            self.layers.append(GCNLayer(params, _l, l, 2 * self.params.total_rel + 1))
+            _l = l
+
+    def forward(self, adj_mat_list):
+        '''
+        inp: (|E| x d)
+        adj_mat_list: (R x |E| x |E|)
+        '''
+        out = self.node_init
+        for layer in self.layers:
+            out = layer(out, adj_mat_list)
+            out = F.relu(out)
+            out = F.normalize(out)
+
+        return out
