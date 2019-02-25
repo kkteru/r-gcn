@@ -111,8 +111,7 @@ for e in range(params.nEpochs):
         trainer.encoder.eval()
         trainer.decoder.eval()
         with torch.no_grad():
-            ent_emb = trainer.get_embeddings()
-            log_data = evaluator.get_log_data(ent_emb, params.eval_mode)
+            log_data = evaluator.get_log_data(params.eval_mode)
         toc = time.time()
         logging.info('Performance: %s in %f' % (str(log_data), (toc - tic)))
 

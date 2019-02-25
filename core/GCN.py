@@ -70,6 +70,7 @@ class GCN(nn.Module):
         for l in self.layer_sizes:
             self.layers.append(GCNLayer(params, _l, l, 2 * self.params.total_rel + 1))
             _l = l
+        self.ent_emb = None
 
     def forward(self, adj_mat_list):
         '''
@@ -81,5 +82,5 @@ class GCN(nn.Module):
             out = layer(out, adj_mat_list)
             out = F.relu(out)
             out = F.normalize(out)
-
+        self.ent_emb = out
         return out

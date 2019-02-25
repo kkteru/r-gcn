@@ -21,7 +21,7 @@ class Evaluator():
                 filtered_rank = filtered_rank - 1
         return filtered_rank
 
-    def get_log_data(self, ent_emb, eval_mode='head'):
+    def get_log_data(self, eval_mode='head'):
         # pdb.set_trace()
 
         mr = []
@@ -30,7 +30,7 @@ class Evaluator():
 
         if eval_mode == 'head' or eval_mode == 'avg':
 
-            distArrayHead = self.decoder.get_all_scores(ent_emb.data, self.link_data_sampler.data[:, 0],
+            distArrayHead = self.decoder.get_all_scores(self.encoder.ent_emb.data, self.link_data_sampler.data[:, 0],
                                                         self.link_data_sampler.data[:, 1], self.link_data_sampler.data[:, 2],
                                                         'head').cpu().numpy()
             rankArrayHead = np.argsort(distArrayHead, axis=1)
@@ -53,7 +53,7 @@ class Evaluator():
 # -------------------------------------------------------------------- #
 
         if eval_mode == 'tail' or eval_mode == 'avg':
-            distArrayTail = self.decoder.get_all_scores(ent_emb.data, self.link_data_sampler.data[:, 0],
+            distArrayTail = self.decoder.get_all_scores(self.encoder.ent_emb.data, self.link_data_sampler.data[:, 0],
                                                         self.link_data_sampler.data[:, 1], self.link_data_sampler.data[:, 2],
                                                         'tail').cpu().numpy()
             rankArrayTail = np.argsort(distArrayTail, axis=1)
