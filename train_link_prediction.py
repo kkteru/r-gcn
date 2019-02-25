@@ -25,7 +25,7 @@ parser.add_argument("--save_every", type=int, default=50,
                     help="Interval of epochs to save a checkpoint of the model?")
 parser.add_argument('--eval_mode', type=str, default="head",
                     help='Evaluate on head and/or tail prediction?')
-parser.add_argument('--data_set', type=str, default="full",
+parser.add_argument('--dataset', type=str, default="full",
                     help='Which dataset to use? "full" for FB15K, "mod" for FB15K237')
 parser.add_argument('--filter', action='store_true',
                     help='Filter the samples while evaluation')
@@ -72,7 +72,7 @@ else:
 
 logging.info(params.device)
 
-if params.data_set == 'mod':
+if params.dataset == 'mod':
     params.total_rel = 237
     params.total_ent = 14541
     DATA_PATH = os.path.join(MAIN_DIR, 'data/FB15K237')
