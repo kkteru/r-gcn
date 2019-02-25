@@ -67,7 +67,7 @@ def initialize_model(params):
         if params.no_encoder:
             enc = EmbLookUp(params, params.total_ent).to(device=params.device)
         else:
-            enc = GCN(params, params.emb_dim).to(device=params.device)
+            enc = GCN(params).to(device=params.device)
         dec = DistMult(params).to(device=params.device)
 
     return enc, dec

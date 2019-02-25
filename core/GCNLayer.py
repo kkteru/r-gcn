@@ -4,7 +4,7 @@ from torch import nn
 
 
 class GCNLayer(nn.Module):
-    def __init__(self, params, in_size, out_size, n_rel, bias=True):
+    def __init__(self, params, in_size, out_size, n_rel, bias=False):
         super(GCNLayer, self).__init__()
         self.params = params
         self.in_size = in_size

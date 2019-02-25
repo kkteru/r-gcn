@@ -95,6 +95,8 @@ for e in range(params.nEpochs):
     res = 0
     tic = time.time()
     for b in range(params.nBatches):
+        trainer.encoder.train()
+        trainer.decoder.train()
         loss = trainer.link_pred_one_step(b)
         res += loss
     toc = time.time()
@@ -106,8 +108,11 @@ for e in range(params.nEpochs):
 
     if (e + 1) % params.eval_every == 0:
         tic = time.time()
-        ent_emb = trainer.get_embeddings()
-        log_data = evaluator.get_log_data(ent_emb, params.eval_mode)
+        trainer.encoder.eval()
+        trainer.decoder.eval()
+        with torch.no_grad():
+            ent_emb = trainer.get_embeddings()
+            log_data = evaluator.get_log_data(ent_emb, params.eval_mode)
         toc = time.time()
         logging.info('Performance: %s in %f' % (str(log_data), (toc - tic)))
 

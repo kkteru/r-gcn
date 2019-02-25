@@ -9,7 +9,7 @@ from .GCNLayer import GCNLayer
 
 
 # class GCN(nn.Module):
-#     def __init__(self, params, t):
+#     def __init__(self, params):
 #         super(GCN, self).__init__()
 #         self.params = params
 #         self.n_layers = self.params.gcn_layers
@@ -49,7 +49,7 @@ from .GCNLayer import GCNLayer
 
 
 class GCN(nn.Module):
-    def __init__(self, params, in_size, layer_sizes=None, inp=None):
+    def __init__(self, params, layer_sizes=None, inp=None):
         super(GCN, self).__init__()
 
         self.params = params
@@ -58,7 +58,7 @@ class GCN(nn.Module):
         assert len(self.layer_sizes) == params.gcn_layers
 
         if inp is None:
-            self.node_init = nn.Parameter(torch.FloatTensor(params.total_ent, in_size))
+            self.node_init = nn.Parameter(torch.FloatTensor(params.total_ent, params.emb_dim))
             nn.init.xavier_uniform_(self.node_init.data)
         else:
             self.node_init = inp
