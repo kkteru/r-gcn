@@ -12,11 +12,6 @@ FALSY_STRINGS = {'off', 'false', '0'}
 TRUTHY_STRINGS = {'on', 'true', '1'}
 
 MAIN_DIR = os.path.relpath(os.path.dirname(os.path.abspath(__file__)))
-DATA_PATH = os.path.join(MAIN_DIR, 'data/FB15K')
-TRAIN_DATA_PATH = os.path.join(DATA_PATH, 'train2id.txt')
-VALID_DATA_PATH = os.path.join(DATA_PATH, 'valid2id.txt')
-TEST_DATA_PATH = os.path.join(DATA_PATH, 'test2id.txt')
-ALL_DATA_PATH = os.path.join(DATA_PATH, 'triple2id.txt')
 
 
 def bool_flag(s):

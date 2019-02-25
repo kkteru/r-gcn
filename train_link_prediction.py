@@ -25,6 +25,8 @@ parser.add_argument("--save_every", type=int, default=50,
                     help="Interval of epochs to save a checkpoint of the model?")
 parser.add_argument('--eval_mode', type=str, default="head",
                     help='Evaluate on head and/or tail prediction?')
+parser.add_argument('--data_set', type=str, default="full",
+                    help='Which dataset to use? "full" for FB15K, "mod" for FB15K237')
 parser.add_argument('--filter', action='store_true',
                     help='Filter the samples while evaluation')
 
@@ -70,11 +72,19 @@ else:
 
 logging.info(params.device)
 
-# params.total_rel = 237
-# params.total_ent = 14541
+if params.data_set == 'mod':
+    params.total_rel = 237
+    params.total_ent = 14541
+    DATA_PATH = os.path.join(MAIN_DIR, 'data/FB15K237')
+else:
+    params.total_rel = 1345
+    params.total_ent = 14951
+    DATA_PATH = os.path.join(MAIN_DIR, 'data/FB15K')
 
-params.total_rel = 1345
-params.total_ent = 14951
+TRAIN_DATA_PATH = os.path.join(DATA_PATH, 'train2id.txt')
+VALID_DATA_PATH = os.path.join(DATA_PATH, 'valid2id.txt')
+TEST_DATA_PATH = os.path.join(DATA_PATH, 'test2id.txt')
+ALL_DATA_PATH = os.path.join(DATA_PATH, 'triple2id.txt')
 
 link_train_data_sampler = DataSampler(params, TRAIN_DATA_PATH, ALL_DATA_PATH, params.nBatches, params.debug)
 link_valid_data_sampler = DataSampler(params, VALID_DATA_PATH, ALL_DATA_PATH,)
