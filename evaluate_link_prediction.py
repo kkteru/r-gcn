@@ -12,6 +12,9 @@ parser = argparse.ArgumentParser(description='TransE model')
 
 parser.add_argument("--experiment_name", type=str, default="default",
                     help="The best modeel saved in this folder would be loaded")
+parser.add_argument("--gpu", type=int, default=0,
+                    help="Which GPU to use?")
+
 parser.add_argument("--no_encoder", action='store_true',
                     help="Run the code in debug mode?")
 parser.add_argument('--disable-cuda', action='store_true',
