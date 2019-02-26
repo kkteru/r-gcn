@@ -54,9 +54,9 @@ def initialize_model(params):
 
     if os.path.exists(os.path.join(params.exp_dir, 'best_enc.pth')):
         logging.info('Loading existing model from %s' % os.path.join(params.exp_dir, 'best_enc.pth'))
-        enc = torch.load(os.path.join(params.exp_dir, 'best_enc.pth'))  # Update these
+        enc = torch.load(os.path.join(params.exp_dir, 'best_enc.pth')).to(device=params.device)  # Update these
         logging.info('Loading existing model from %s' % os.path.join(params.exp_dir, 'best_dec.pth'))
-        dec = torch.load(os.path.join(params.exp_dir, 'best_dec.pth'))  # Update these
+        dec = torch.load(os.path.join(params.exp_dir, 'best_dec.pth')).to(device=params.device)  # Update these
     else:
         logging.info('No existing model found. Initializing new model..')
         if params.no_encoder:
