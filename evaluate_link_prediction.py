@@ -32,7 +32,7 @@ params = parser.parse_args()
 
 params.device = None
 if not params.disable_cuda and torch.cuda.is_available():
-    params.device = torch.device('cuda')
+    params.device = torch.device('cuda:%d' % params.gpu)
 else:
     params.device = torch.device('cpu')
 
