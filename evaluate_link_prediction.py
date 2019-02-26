@@ -25,6 +25,8 @@ parser.add_argument('--filter', action='store_true',
                     help='Filter the samples while evaluation')
 parser.add_argument('--eval_mode', type=str, default="head",
                     help='Evaluate on head and/or tail prediction?')
+parser.add_argument('--dataset', type=str, default="full",
+                    help='Which dataset to use? "full" for FB15K, "mod" for FB15K237')
 
 params = parser.parse_args()
 
@@ -35,6 +37,20 @@ else:
     params.device = torch.device('cpu')
 
 logging.info(params.device)
+
+if params.dataset == 'mod':
+    params.total_rel = 237
+    params.total_ent = 14541
+    DATA_PATH = os.path.join(MAIN_DIR, 'data/FB15K237')
+else:
+    params.total_rel = 1345
+    params.total_ent = 14951
+    DATA_PATH = os.path.join(MAIN_DIR, 'data/FB15K')
+
+TRAIN_DATA_PATH = os.path.join(DATA_PATH, 'train2id.txt')
+VALID_DATA_PATH = os.path.join(DATA_PATH, 'valid2id.txt')
+TEST_DATA_PATH = os.path.join(DATA_PATH, 'test2id.txt')
+ALL_DATA_PATH = os.path.join(DATA_PATH, 'triple2id.txt')
 
 params.total_rel = 1345
 params.total_ent = 14951
