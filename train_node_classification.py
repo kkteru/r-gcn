@@ -13,32 +13,32 @@ logging.basicConfig(level=logging.INFO)
 
 parser = argparse.ArgumentParser(description='TransE model')
 
-parser.add_argument("--experiment_name", type=str, default="default",
+parser.add_argument("--experiment_name", "-e", type=str, default="default",
                     help="A folder with this name would be created to dump saved models and log files")
-parser.add_argument("--dataset", type=str, default="aifb",
+parser.add_argument("--dataset", "-d", type=str, default="aifb",
                     help="Dataset string ('aifb', 'mutag', 'bgs', 'am', 'cora')")
 
-parser.add_argument("--nEpochs", type=int, default=10,
+parser.add_argument("--nEpochs", "-ne", type=int, default=30,
                     help="Learning rate of the optimizer")
-parser.add_argument("--eval_every", type=int, default=25,
+parser.add_argument("--eval_every", type=int, default=3,
                     help="Interval of epochs to evaluate the model?")
-parser.add_argument("--save_every", type=int, default=50,
+parser.add_argument("--save_every", type=int, default=10,
                     help="Interval of epochs to save a checkpoint of the model?")
 parser.add_argument("--patience", type=int, default=10,
                     help="Early stopping patience")
 
 parser.add_argument("--optimizer", type=str, default="Adam",
                     help="Which optimizer to use?")
-parser.add_argument("--lr", type=float, default=0.1,
+parser.add_argument("--lr", type=float, default=0.01,
                     help="Learning rate of the optimizer")
 parser.add_argument("--momentum", type=float, default=0,
                     help="Momentum of the SGD optimizer")
 parser.add_argument("--clip", type=int, default=1000,
                     help="Maximum gradient norm allowed.")
 
-parser.add_argument("--emb_dim", type=int, default=16,
+parser.add_argument("--emb_dim", "-dim", type=int, default=16,
                     help="Entity embedding size")
-parser.add_argument("--gcn_layers", type=int, default=1,
+parser.add_argument("--gcn_layers", "-l", type=int, default=1,
                     help="Number of GCN layers")
 parser.add_argument("--n_basis", type=int, default=2,
                     help="Number of basis functions to use for GCN weights")
@@ -47,7 +47,7 @@ parser.add_argument("--debug", type=bool_flag, default=False,
                     help="Run the code in debug mode?")
 parser.add_argument("--no_encoder", action='store_true',
                     help="Run the code in debug mode?")
-parser.add_argument('--disable-cuda', action='store_true',
+parser.add_argument('--disable_cuda', action='store_true',
                     help='Disable CUDA')
 
 params = parser.parse_args()
@@ -107,3 +107,6 @@ for e in range(params.nEpochs):
     if (e + 1) % params.save_every == 0:
         torch.save(gcn, os.path.join(params.exp_dir, 'gcn_checkpoint.pth'))
         torch.save(sm_classifier, os.path.join(params.exp_dir, 'sm_checkpoint.pth'))
+
+test_log_data = evaluator.classifier_log_data(data='test')
+logging.info('Test performance:' + str(test_log_data))

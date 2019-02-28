@@ -55,7 +55,7 @@ class Trainer():
         return loss
 
     def save_classifier(self, log_data):
-        if log_data['acc'] >= self.best_metric:
+        if log_data['acc'] > self.best_metric:
             torch.save(self.encoder, os.path.join(self.params.exp_dir, 'best_gcn.pth'))  # Does it overwrite or fuck with the existing file?
             torch.save(self.classifier, os.path.join(self.params.exp_dir, 'best_classifier.pth'))  # Does it overwrite or fuck with the existing file?
             logging.info('Better models found w.r.t accuracy. Saved it!')

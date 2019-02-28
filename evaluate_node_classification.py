@@ -11,7 +11,7 @@ logging.basicConfig(level=logging.INFO)
 
 parser = argparse.ArgumentParser(description='TransE model')
 
-parser.add_argument("--experiment_name", type=str, default="default",
+parser.add_argument("--experiment_name", "-e", type=str, default="default",
                     help="A folder with this name would be created to dump saved models and log files")
 parser.add_argument("--dataset", type=str, default="aifb",
                     help="Dataset string ('aifb', 'mutag', 'bgs', 'am', 'cora')")
