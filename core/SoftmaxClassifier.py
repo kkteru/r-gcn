@@ -5,10 +5,10 @@ import torch.nn as nn
 
 
 class SoftmaxClassifier(nn.Module):
-    def __init__(self, params):
+    def __init__(self, params, n_class):
         super(SoftmaxClassifier, self).__init__()
         self.params = params
-        self.weights = nn.Parameter(torch.rand(self.params.emb_dim, self.params.n_class, requires_grad=True))  # (d, n)
+        self.weights = nn.Parameter(torch.rand(self.params.emb_dim, n_class, requires_grad=True))  # (d, n)
 
     def forward(self, ent_emb):
         '''

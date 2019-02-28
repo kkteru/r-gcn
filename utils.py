@@ -8,7 +8,7 @@ import numpy as np
 import scipy.sparse as sp
 import pdb
 
-from core import SoftmaxClassifier, DistMul, GCN
+from core import SoftmaxClassifier, GCN, EmbLookUp
 
 FALSY_STRINGS = {'off', 'false', '0'}
 TRUTHY_STRINGS = {'on', 'true', '1'}
@@ -268,26 +268,22 @@ def initialize_experiment(params):
         json.dump(vars(params), fout)
 
 
-def initialize_model(params):
+def initialize_model(params, classifier_data):
 
     if os.path.exists(os.path.join(params.exp_dir, 'best_gcn.pth')):
         logging.info('Loading existing model from %s' % os.path.join(params.exp_dir, 'best_gcn.pth'))
-        gcn = torch.load(os.path.join(params.exp_dir, 'best_gcn.pth'))  # Update these
-        distmul = None
-        sm_classifier = None
-        if os.path.exists(os.path.join(params.exp_dir, 'best_distmul.pth')):
-            logging.info('Loading existing model from %s' % os.path.join(params.exp_dir, 'best_distmul.pth'))
-            distmul = torch.load(os.path.join(params.exp_dir, 'best_distmul.pth'))  # Update these
-        if os.path.exists(os.path.join(params.exp_dir, 'best_classifier.pth')):
-            logging.info('Loading existing model from %s' % os.path.join(params.exp_dir, 'best_classifier.pth'))
-            sm_classifier = torch.load(os.path.join(params.exp_dir, 'best_classifier.pth'))  # Update these
+        enc = torch.load(os.path.join(params.exp_dir, 'best_gcn.pth')).to(device=params.device)  # Update these
+        logging.info('Loading existing model from %s' % os.path.join(params.exp_dir, 'best_classifier.pth'))
+        sm_classifier = torch.load(os.path.join(params.exp_dir, 'best_classifier.pth')).to(device=params.device)  # Update these
     else:
         logging.info('No existing model found. Initializing new model..')
-        gcn = GCN(params).to(device=params.device)
-        distmul = DistMul(params).to(device=params.device)
-        sm_classifier = SoftmaxClassifier(params).to(device=params.device)
+        if params.no_encoder:
+            enc = EmbLookUp(params, params.total_ent).to(device=params.device)
+        else:
+            enc = GCN(params, inp=classifier_data['feat']).to(device=params.device)
+        sm_classifier = SoftmaxClassifier(params, classifier_data['y'].shape[1]).to(device=params.device)
 
-    return gcn, distmul, sm_classifier
+    return enc, sm_classifier
 
 
 # class Logger(object):

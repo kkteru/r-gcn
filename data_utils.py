@@ -11,6 +11,7 @@ import glob
 import pandas as pd
 import wget
 import pickle as pkl
+import pdb
 
 from collections import Counter
 
@@ -322,14 +323,15 @@ def load_data(dataset_str='aifb', limit=-1):
             else:
                 print(u'Node not in dictionary, skipped: ',
                       nod.encode('utf-8', errors='replace'))
-        idx = np.random.random_integers(0, len(train_idx) - 1, 20)
+        idx = np.random.randint(0, len(train_idx) - 1, int(0.2 * len(train_idx)))
 
         print('Generating validation set from train set')
 
         valid_idx = list(np.array(train_idx)[idx])
         valid_names = list(np.array(train_names)[idx])
 
-        for i in idx:
+        for i in sorted(idx, reverse=True):
+            # pdb.set_trace()
             del train_idx[i]
             del train_names[i]
 
