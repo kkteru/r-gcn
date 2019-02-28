@@ -59,10 +59,10 @@ for i in range(len(A)):
     csr_zero_rows(A[i], todel)
     normalize(A[i], norm='l1', axis=1, copy=False)
 
-features = np.eye(A[0].shape[0])
+#features = np.eye(A[0].shape[0])
 
 data = {'A': A,
-        'feat': features,
+#        'feat': features,
         'y': y,
         'train_idx': train_idx,
         'valid_idx': valid_idx,
