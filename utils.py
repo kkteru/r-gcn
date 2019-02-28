@@ -268,9 +268,9 @@ def initialize_experiment(params):
         json.dump(vars(params), fout)
 
 
-def initialize_model(params, classifier_data):
+def initialize_model(params, classifier_data, fresh=True):
 
-    if os.path.exists(os.path.join(params.exp_dir, 'best_gcn.pth')):
+    if not fresh and os.path.exists(os.path.join(params.exp_dir, 'best_gcn.pth')):
         logging.info('Loading existing model from %s' % os.path.join(params.exp_dir, 'best_gcn.pth'))
         enc = torch.load(os.path.join(params.exp_dir, 'best_gcn.pth')).to(device=params.device)  # Update these
         logging.info('Loading existing model from %s' % os.path.join(params.exp_dir, 'best_classifier.pth'))

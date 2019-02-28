@@ -42,7 +42,7 @@ parser.add_argument("--emb_dim", "-dim", type=int, default=16,
                     help="Entity embedding size")
 parser.add_argument("--gcn_layers", "-l", type=int, default=1,
                     help="Number of GCN layers")
-parser.add_argument("--n_basis", type=int, default=2,
+parser.add_argument("--n_basis", "-b", type=int, default=2,
                     help="Number of basis functions to use for GCN weights")
 
 parser.add_argument("--debug", type=bool_flag, default=False,
@@ -69,7 +69,7 @@ with open(MAIN_DIR + '/' + params.dataset + '.pickle', 'rb') as f:
 
 classifier_data['A'] = list(map(get_torch_sparse_matrix, classifier_data['A'], [params.device] * len(classifier_data['A'])))
 
-# pdb.set_trace()
+pdb.set_trace()
 params.total_rel = len(classifier_data['A'])
 params.total_ent = classifier_data['A'][0].shape[0]
 params.n_class = classifier_data['y'].shape[1]
@@ -110,5 +110,9 @@ for e in range(params.nEpochs):
         torch.save(gcn, os.path.join(params.exp_dir, 'gcn_checkpoint.pth'))
         torch.save(sm_classifier, os.path.join(params.exp_dir, 'sm_checkpoint.pth'))
 
-test_log_data = evaluator.classifier_log_data(data='test')
+#--------------------------------------------------------------------------------------#
+
+final_gcn, final_sm_classifier = initialize_model(params, classifier_data, fresh=False)
+test_evaluator = Evaluator(params, final_gcn, final_sm_classifier, classifier_data)
+test_log_data = test_evaluator.classifier_log_data(data='test')
 logging.info('Test performance:' + str(test_log_data))
