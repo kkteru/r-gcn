@@ -15,6 +15,8 @@ parser = argparse.ArgumentParser(description='TransE model')
 
 parser.add_argument("--experiment_name", "-e", type=str, default="default",
                     help="A folder with this name would be created to dump saved models and log files")
+parser.add_argument("--gpu", type=int, default=1,
+                    help="Which GPU to use?")
 parser.add_argument("--dataset", "-d", type=str, default="aifb",
                     help="Dataset string ('aifb', 'mutag', 'bgs', 'am', 'cora')")
 
@@ -56,7 +58,7 @@ initialize_experiment(params)
 
 params.device = None
 if not params.disable_cuda and torch.cuda.is_available():
-    params.device = torch.device('cuda')
+    params.device = torch.device('cuda:%d' % params.gpu)
 else:
     params.device = torch.device('cpu')
 
