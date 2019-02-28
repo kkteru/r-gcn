@@ -13,17 +13,13 @@ parser = argparse.ArgumentParser(description='TransE model')
 
 parser.add_argument("--experiment_name", type=str, default="default",
                     help="A folder with this name would be created to dump saved models and log files")
-parser.add_argument("--dataset", type=str, default="cora",
+parser.add_argument("--dataset", type=str, default="aifb",
                     help="Dataset string ('aifb', 'mutag', 'bgs', 'am', 'cora')")
 
 parser.add_argument("--emb_dim", type=int, default=16,
                     help="Entity embedding size")
-parser.add_argument("--feat_in", type=int, default=1433,
-                    help="Input feature size")
 parser.add_argument("--gcn_layers", type=int, default=1,
                     help="Number of GCN layers")
-parser.add_argument("--n_class", type=int, default=7,
-                    help="Number of classes in classification task")
 
 parser.add_argument("--no_encoder", type=bool_flag, default=False,
                     help="Run the code in debug mode?")
@@ -52,9 +48,9 @@ params.total_ent = classifier_data['A'][0].shape[0]
 
 logging.info('Loaded %s dataset with %d entities and %d relations' % (params.dataset, params.total_ent, params.total_rel))
 
-gcn, _, sm_classifier = initialize_model(params)
+gcn, sm_classifier = initialize_model(params, classifier_data)
 
-evaluator = Evaluator(params, gcn, None, sm_classifier, classifier_data, None, None)
+evaluator = Evaluator(params, gcn, sm_classifier, classifier_data)
 
 logging.info('Testing model %s' % os.path.join(params.exp_dir, 'best_model.pth'))
 

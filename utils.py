@@ -280,7 +280,7 @@ def initialize_model(params, classifier_data):
         if params.no_encoder:
             enc = EmbLookUp(params, params.total_ent).to(device=params.device)
         else:
-            enc = GCN(params, inp=classifier_data['feat']).to(device=params.device)
+            enc = GCN(params).to(device=params.device)
         sm_classifier = SoftmaxClassifier(params, classifier_data['y'].shape[1]).to(device=params.device)
 
     return enc, sm_classifier
