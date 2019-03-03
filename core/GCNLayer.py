@@ -14,7 +14,7 @@ class GCNLayer(nn.Module):
         self.basis_coeff = nn.Parameter(torch.FloatTensor(self.params.total_rel, self.params.n_basis))
 
         if bias:
-            self.bias = nn.Parameter(torch.FloatTensor(self.params.total_rel, self.out_size))
+            self.bias = nn.Parameter(torch.FloatTensor(self.out_size))
         else:
             self.register_parameter('bias', None)
 
@@ -35,16 +35,33 @@ class GCNLayer(nn.Module):
 
         # Aggregation (no explicit separation of Concat step here since we are simply averaging over all)
         rel_weights = torch.einsum('rb, bio -> rio', (self.basis_coeff, self.basis_weights))
-        out = torch.zeros(self.params.total_ent, self.out_size).to(device=self.params.device)
-        # pdb.set_trace()
-        for i, mat in enumerate(adj_mat_list):
-            # pdb.set_trace()
-            if inp is not None:
-                emb_acc = torch.sparse.mm(mat, inp)  # (|E| x in_size)
-            else:
-                emb_acc = mat
-            out += torch.matmul(emb_acc, rel_weights[i])
-            if self.bias is not None:
-                out += self.bias[i].unsqueeze(0)  # (|E| x out_size)
+        weights = rel_weights.view(rel_weights.shape[0] * rel_weights.shape[1], rel_weights.shape[2])  # (in_size * R, out_size)
+
+        emb_acc = []
+
+        if inp is not None:
+            for mat in adj_mat_list:
+                emb_acc.append(torch.sparse.mm(mat, inp))  # (|E| x in_size)
+        else:
+            emb_acc = adj_mat_list
+
+        tmp = torch.cat(emb_acc, dim=1)  # (|E|, in_size * R)
+
+        out = torch.matmul(tmp, weights)  # (|E| x out_size)
+
+        if self.bias is not None:
+            out += self.bias.unsqueeze(0)  # (|E| x out_size)
+
+        # out = torch.zeros(self.params.total_ent, self.out_size).to(device=self.params.device)
+        # # pdb.set_trace()
+        # for i, mat in enumerate(adj_mat_list):
+        #     # pdb.set_trace()
+        #     if inp is not None:
+        #         emb_acc = torch.sparse.mm(mat, inp)  # (|E| x in_size)
+        #     else:
+        #         emb_acc = mat
+        #     out += torch.matmul(emb_acc, rel_weights[i])
+        #     if self.bias is not None:
+        #         out += self.bias[i].unsqueeze(0)  # (|E| x out_size)
 
         return out  # (|E| x out_size)
