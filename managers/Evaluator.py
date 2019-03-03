@@ -18,7 +18,8 @@ class Evaluator():
 
         # pdb.set_trace()
         ent_emb = self.encoder.ent_emb
-        pred = self.classifier(ent_emb[idx])
+        pred = ent_emb[idx]
+        # pred = self.classifier(ent_emb[idx])
 
         acc = np.mean(np.argmax(pred.detach().cpu().numpy(), axis=1) == np.argmax(self.classification_data['y'][idx], axis=1).squeeze())
 

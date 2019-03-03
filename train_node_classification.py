@@ -36,11 +36,13 @@ parser.add_argument("--lr", type=float, default=0.01,
 parser.add_argument("--momentum", type=float, default=0,
                     help="Momentum of the SGD optimizer")
 parser.add_argument("--clip", type=int, default=1000,
-                    help="Maximum gradient norm allowed.")
+                    help="Maximum gradient norm allowed")
+parser.add_argument("--l2", type=float, default=0,
+                    help="Regularization constant for 1st layer weights")
 
 parser.add_argument("--emb_dim", "-dim", type=int, default=16,
                     help="Entity embedding size")
-parser.add_argument("--gcn_layers", "-l", type=int, default=1,
+parser.add_argument("--gcn_layers", "-l", type=int, default=2,
                     help="Number of GCN layers")
 parser.add_argument("--n_basis", "-b", type=int, default=2,
                     help="Number of basis functions to use for GCN weights")
@@ -69,7 +71,7 @@ with open(MAIN_DIR + '/' + params.dataset + '.pickle', 'rb') as f:
 
 classifier_data['A'] = list(map(get_torch_sparse_matrix, classifier_data['A'], [params.device] * len(classifier_data['A'])))
 
-pdb.set_trace()
+# pdb.set_trace()
 params.total_rel = len(classifier_data['A'])
 params.total_ent = classifier_data['A'][0].shape[0]
 params.n_class = classifier_data['y'].shape[1]

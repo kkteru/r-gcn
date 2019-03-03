@@ -41,21 +41,24 @@ class Trainer():
 
         # pdb.set_trace()
         ent_emb = self.encoder(adj_mat)
-        scores = self.classifier(ent_emb[train_batch])
+        scores = ent_emb[train_batch]
+        # scores = self.classifier(ent_emb[train_batch])
 
         # pdb.set_trace()
+        pred_loss = F.cross_entropy(scores, y)
 
-        loss = F.cross_entropy(scores, y)
+        reg_loss = torch.norm(self.encoder.layers[0].basis_weights) + torch.norm(self.encoder.layers[0].basis_coeff)
 
+        loss = pred_loss + self.params.l2 * reg_loss
         self.optimizer.zero_grad()
         loss.backward()
-        nn.utils.clip_grad_norm_(self.model_params, self.params.clip)
+        # nn.utils.clip_grad_norm_(self.model_params, self.params.clip)
         self.optimizer.step()
 
         return loss
 
     def save_classifier(self, log_data):
-        if log_data['acc'] > self.best_metric:
+        if log_data['acc'] >= self.best_metric:
             torch.save(self.encoder, os.path.join(self.params.exp_dir, 'best_gcn.pth'))  # Does it overwrite or fuck with the existing file?
             torch.save(self.classifier, os.path.join(self.params.exp_dir, 'best_classifier.pth'))  # Does it overwrite or fuck with the existing file?
             logging.info('Better models found w.r.t accuracy. Saved it!')

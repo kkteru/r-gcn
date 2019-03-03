@@ -35,10 +35,14 @@ class GCNLayer(nn.Module):
 
         # Aggregation (no explicit separation of Concat step here since we are simply averaging over all)
         rel_weights = torch.einsum('rb, bio -> rio', (self.basis_coeff, self.basis_weights))
-        out = torch.zeros(inp.shape[0], self.out_size).to(device=self.params.device)
+        out = torch.zeros(self.params.total_ent, self.out_size).to(device=self.params.device)
+        # pdb.set_trace()
         for i, mat in enumerate(adj_mat_list):
             # pdb.set_trace()
-            emb_acc = torch.sparse.mm(mat, inp)  # (|E| x in_size)
+            if inp is not None:
+                emb_acc = torch.sparse.mm(mat, inp)  # (|E| x in_size)
+            else:
+                emb_acc = mat
             out += torch.matmul(emb_acc, rel_weights[i])
             if self.bias is not None:
                 out += self.bias[i].unsqueeze(0)  # (|E| x out_size)
