@@ -71,7 +71,7 @@ with open(MAIN_DIR + '/' + params.dataset + '.pickle', 'rb') as f:
 
 classifier_data['A'] = list(map(get_torch_sparse_matrix, classifier_data['A'], [params.device] * len(classifier_data['A'])))
 
-pdb.set_trace()
+# pdb.set_trace()
 params.total_rel = len(classifier_data['A'])
 params.total_ent = classifier_data['A'][0].shape[0]
 params.n_class = classifier_data['y'].shape[1]

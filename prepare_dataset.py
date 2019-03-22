@@ -26,7 +26,7 @@ DATASET = args['dataset']
 NUM_GC_LAYERS = 2  # Number of graph convolutional layers
 
 # Get data
-A, X, y, labeled_nodes_idx, train_idx, valid_idx, test_idx, rel_dict, train_names, valid_names, test_names = load_data(
+A, X, y, labeled_nodes_idx, train_idx, test_idx, rel_dict, train_names, test_names = load_data(
     DATASET)
 
 rel_list = list(range(len(A)))
@@ -62,10 +62,9 @@ for i in range(len(A)):
 #features = np.eye(A[0].shape[0])
 
 data = {'A': A,
-#        'feat': features,
+        #        'feat': features,
         'y': y,
         'train_idx': train_idx,
-        'valid_idx': valid_idx,
         'test_idx': test_idx
         }
 
