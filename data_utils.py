@@ -323,17 +323,17 @@ def load_data(dataset_str='aifb', limit=-1):
             else:
                 print(u'Node not in dictionary, skipped: ',
                       nod.encode('utf-8', errors='replace'))
-        idx = np.random.randint(0, len(train_idx) - 1, int(0.2 * len(train_idx)))
+        # idx = np.random.randint(0, len(train_idx) - 1, int(0.2 * len(train_idx)))
 
-        print('Generating validation set from train set')
+        # print('Generating validation set from train set')
 
-        valid_idx = list(np.array(train_idx)[idx])
-        valid_names = list(np.array(train_names)[idx])
+        # valid_idx = list(np.array(train_idx)[idx])
+        # valid_names = list(np.array(train_names)[idx])
 
-        for i in sorted(idx, reverse=True):
-            # pdb.set_trace()
-            del train_idx[i]
-            del train_names[i]
+        # for i in sorted(idx, reverse=True):
+        #     # pdb.set_trace()
+        #     del train_idx[i]
+        #     del train_names[i]
 
         print('Loading test set')
 

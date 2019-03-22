@@ -12,7 +12,7 @@ class Evaluator():
 
     def classifier_log_data(self, data='valid'):
         if data == 'valid':
-            idx = self.classification_data['valid_idx']
+            idx = self.classification_data['train_idx']
         elif data == 'test':
             idx = self.classification_data['test_idx']
 
