@@ -47,6 +47,18 @@ class GCNLayer(nn.Module):
 
         tmp = torch.cat(emb_acc, dim=1)  # (|E|, in_size * R)
 
+        # HORRIBLE HACK!
+        while torch.isnan(torch.norm(tmp)):
+            emb_acc = []
+
+            if inp is not None:
+                for i, mat in enumerate(adj_mat_list):
+                    emb_acc.append(torch.sparse.mm(mat, inp))  # (|E| x in_size)
+            else:
+                emb_acc = adj_mat_list
+
+            tmp = torch.cat(emb_acc, dim=1)  # (|E|, in_size * R)
+
         out = torch.matmul(tmp, weights)  # (|E| x out_size)
 
         if self.bias is not None:
