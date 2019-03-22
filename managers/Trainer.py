@@ -47,7 +47,7 @@ class Trainer():
         # pdb.set_trace()
         pred_loss = F.cross_entropy(scores, y)
 
-        reg_loss = torch.norm(self.encoder.layers[0].basis_weights) + torch.norm(self.encoder.layers[0].basis_coeff)
+        reg_loss = torch.norm(self.encoder.layers[0].basis_weights)**2 + torch.norm(self.encoder.layers[0].basis_coeff)**2
 
         loss = pred_loss + self.params.l2 * reg_loss
         self.optimizer.zero_grad()
