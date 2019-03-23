@@ -30,6 +30,11 @@ class Trainer():
         if params.optimizer == "Adam":
             self.optimizer = optim.Adam(self.model_params, lr=params.lr, weight_decay=self.params.l2)
 
+    def reset_state(self):
+        self.best_metric = 0
+        self.last_metric = 0
+        self.bad_count = 0
+
     def classifier_one_step(self):
         train_batch = self.classifier_data['train_idx']  # (batch_size)
         y = self.classifier_data['y'][train_batch]  # y: (batch_size, n)

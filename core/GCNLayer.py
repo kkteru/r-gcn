@@ -10,8 +10,11 @@ class GCNLayer(nn.Module):
         self.in_size = in_size
         self.out_size = out_size
 
-        self.basis_weights = nn.Parameter(torch.FloatTensor(self.params.n_basis, self.in_size, self.out_size))
-        self.basis_coeff = nn.Parameter(torch.FloatTensor(self.params.total_rel, self.params.n_basis))
+        if self.params.n_basis > 0:
+            self.basis_weights = nn.Parameter(torch.FloatTensor(self.params.n_basis, self.in_size, self.out_size))
+            self.basis_coeff = nn.Parameter(torch.FloatTensor(self.params.total_rel, self.params.n_basis))
+        else:
+            self.weights = nn.Parameter(torch.FloatTensor(self.params.total_rel, self.in_size, self.out_size))
 
         if bias:
             self.bias = nn.Parameter(torch.FloatTensor(self.out_size))
@@ -21,8 +24,11 @@ class GCNLayer(nn.Module):
         self.reset_parameters()
 
     def reset_parameters(self):
-        nn.init.xavier_uniform_(self.basis_weights.data)
-        nn.init.xavier_uniform_(self.basis_coeff.data)
+        if self.params.n_basis > 0:
+            nn.init.xavier_uniform_(self.basis_weights.data)
+            nn.init.xavier_uniform_(self.basis_coeff.data)
+        else:
+            nn.init.xavier_uniform_(self.weights.data)
 
         if self.bias is not None:
             nn.init.xavier_uniform_(self.bias.data)
@@ -34,7 +40,11 @@ class GCNLayer(nn.Module):
         '''
 
         # Aggregation (no explicit separation of Concat step here since we are simply averaging over all)
-        rel_weights = torch.einsum('rb, bio -> rio', (self.basis_coeff, self.basis_weights))
+        if self.params.n_basis > 0:
+            rel_weights = torch.einsum('rb, bio -> rio', (self.basis_coeff, self.basis_weights))
+        else:
+            rel_weights = self.weights
+
         weights = rel_weights.view(rel_weights.shape[0] * rel_weights.shape[1], rel_weights.shape[2])  # (in_size * R, out_size)
 
         emb_acc = []
