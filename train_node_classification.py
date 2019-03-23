@@ -86,39 +86,35 @@ evaluator = Evaluator(params, gcn, sm_classifier, classifier_data)
 logging.info('Starting training with full batch...')
 
 # tb_logger = Logger(params.exp_dir)
-perf = []
-for i in range(10):
-    gcn.reset_parameters()
-    for e in range(params.nEpochs):
-        tic = time.time()
-        loss = trainer.classifier_one_step()
-        toc = time.time()
+for e in range(params.nEpochs):
+    tic = time.time()
+    loss = trainer.classifier_one_step()
+    toc = time.time()
 
-        # tb_logger.scalar_summary('loss', loss, e)
+    # tb_logger.scalar_summary('loss', loss, e)
 
-        logging.info('Epoch %d with loss: %f in %f'
-                     % (e, loss, toc - tic))
+    logging.info('Epoch %d with loss: %f in %f'
+                 % (e, loss, toc - tic))
 
-        if (e + 1) % params.eval_every == 0:
-            log_data = evaluator.classifier_log_data()
-            logging.info('Performance:' + str(log_data))
+    if (e + 1) % params.eval_every == 0:
+        log_data = evaluator.classifier_log_data()
+        logging.info('Performance:' + str(log_data))
 
-            # for tag, value in log_data.items():
-            # tb_logger.scalar_summary(tag, value, e + 1)
+        # for tag, value in log_data.items():
+        # tb_logger.scalar_summary(tag, value, e + 1)
 
-            to_continue = trainer.save_classifier(log_data)
-            if not to_continue:
-                break
+        # to_continue = trainer.save_classifier(log_data)
+        # if not to_continue:
+        #     break
 
-        if (e + 1) % params.save_every == 0:
-            torch.save(gcn, os.path.join(params.exp_dir, 'gcn_checkpoint.pth'))
-            torch.save(sm_classifier, os.path.join(params.exp_dir, 'sm_checkpoint.pth'))
+    # if (e + 1) % params.save_every == 0:
+    #     torch.save(gcn, os.path.join(params.exp_dir, 'gcn_checkpoint.pth'))
+    #     torch.save(sm_classifier, os.path.join(params.exp_dir, 'sm_checkpoint.pth'))
 
-    #--------------------------------------------------------------------------------------#
+#--------------------------------------------------------------------------------------#
 
-    final_gcn, final_sm_classifier = initialize_model(params, classifier_data, fresh=False)
-    test_evaluator = Evaluator(params, final_gcn, final_sm_classifier, classifier_data)
-    test_log_data = test_evaluator.classifier_log_data(data='test')
-    logging.info('%d Test performance:' % i + str(test_log_data))
-    perf.append(test_log_data['acc'])
-print('Mean: %f, Std: %f' % (np.mean(perf), np.std(perf)))
+# final_gcn, final_sm_classifier = initialize_model(params, classifier_data, fresh=False)
+# test_evaluator = Evaluator(params, final_gcn, final_sm_classifier, classifier_data)
+# test_log_data = test_evaluator.classifier_log_data(data='test')
+test_log_data = evaluator.classifier_log_data(data='test')
+logging.info('%d Test performance:' % i + str(test_log_data))

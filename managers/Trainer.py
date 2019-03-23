@@ -26,9 +26,9 @@ class Trainer():
         logging.info('Total number of parameters: %d' % sum(map(lambda x: x.numel(), self.model_params)))
         # pdb.set_trace()
         if params.optimizer == "SGD":
-            self.optimizer = optim.SGD(self.model_params, lr=params.lr, momentum=params.momentum)
+            self.optimizer = optim.SGD(self.model_params, lr=params.lr, momentum=params.momentum, weight_decay=self.params.l2)
         if params.optimizer == "Adam":
-            self.optimizer = optim.Adam(self.model_params, lr=params.lr)
+            self.optimizer = optim.Adam(self.model_params, lr=params.lr, weight_decay=self.params.l2)
 
     def classifier_one_step(self):
         train_batch = self.classifier_data['train_idx']  # (batch_size)
@@ -45,11 +45,8 @@ class Trainer():
         # scores = self.classifier(ent_emb[train_batch])
 
         # pdb.set_trace()
-        pred_loss = F.cross_entropy(scores, y)
+        loss = F.cross_entropy(scores, y)
 
-        reg_loss = torch.norm(self.encoder.layers[0].basis_weights)**2 + torch.norm(self.encoder.layers[0].basis_coeff)**2
-
-        loss = pred_loss + self.params.l2 * reg_loss
         self.optimizer.zero_grad()
         loss.backward()
         # nn.utils.clip_grad_norm_(self.model_params, self.params.clip)
