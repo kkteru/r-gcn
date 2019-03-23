@@ -86,7 +86,7 @@ evaluator = Evaluator(params, gcn, sm_classifier, classifier_data)
 logging.info('Starting training with full batch...')
 
 # tb_logger = Logger(params.exp_dir)
-pref = []
+perf = []
 for i in range(10):
     gcn.reset_parameters()
     for e in range(params.nEpochs):
