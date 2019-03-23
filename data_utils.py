@@ -358,11 +358,11 @@ def load_data(dataset_str='aifb', limit=-1):
         save_sparse_csr(labels_file, labels)
 
         np.save(train_idx_file, train_idx)
-        # np.save(valid_idx_file, valid_idx)
+        np.save(valid_idx_file, valid_idx)
         np.save(test_idx_file, test_idx)
 
         np.save(train_names_file, train_names)
-        # np.save(valid_names_file, valid_names)
+        np.save(valid_names_file, valid_names)
         np.save(test_names_file, test_names)
 
         pkl.dump(relations_dict, open(rel_dict_file, 'wb'))
@@ -370,7 +370,7 @@ def load_data(dataset_str='aifb', limit=-1):
 
     features = sp.identity(adj_shape[0], format='csr')
 
-    return adjacencies, features, labels, labeled_nodes_idx, train_idx, test_idx, relations_dict, train_names, test_names
+    return adjacencies, features, labels, labeled_nodes_idx, train_idx, valid_idx, test_idx, relations_dict, train_names, valid_names, test_names
 
 
 def parse(symbol):
