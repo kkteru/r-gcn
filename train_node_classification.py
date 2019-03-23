@@ -117,4 +117,4 @@ for e in range(params.nEpochs):
 # test_evaluator = Evaluator(params, final_gcn, final_sm_classifier, classifier_data)
 # test_log_data = test_evaluator.classifier_log_data(data='test')
 test_log_data = evaluator.classifier_log_data(data='test')
-logging.info('%d Test performance:' % i + str(test_log_data))
+logging.info('Test performance:' + str(test_log_data))
