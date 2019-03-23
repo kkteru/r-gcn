@@ -30,6 +30,10 @@ class GCN(nn.Module):
             _l = l
         self.ent_emb = None
 
+    def reset_parameters(self):
+        for layer in self.layers:
+            layer.reset_parameters()
+
     def forward(self, adj_mat_list):
         '''
         inp: (|E| x d)
