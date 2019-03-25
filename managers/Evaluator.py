@@ -16,10 +16,13 @@ class Evaluator():
     # skip without counting.
     def _filter(self, head, tail, rel, array, rank, h):
         filtered_rank = rank
-        for i in range(rank):
-            if (head * (1 - h) + array[i] * h, array[i] * (1 - h) + tail * h, rel) in self.link_data_sampler.all_data:
-                filtered_rank = filtered_rank - 1
-        return filtered_rank
+        if h == 1:
+            self.link_data_sampler.head_mapping[(rel, tail)]
+
+            # for i in range(rank):
+            #     if (head * (1 - h) + array[i] * h, array[i] * (1 - h) + tail * h, rel) in self.link_data_sampler.all_data:
+            #         filtered_rank = filtered_rank - 1
+            # return filtered_rank
 
     def get_log_data(self, eval_mode='head'):
         # pdb.set_trace()
@@ -34,16 +37,22 @@ class Evaluator():
                                                         self.link_data_sampler.data[:, 1], self.link_data_sampler.data[:, 2],
                                                         'head').cpu().numpy()
 
-            rankArrayHead = np.argsort(distArrayHead, axis=1)
+            # rankArrayHead = np.argsort(distArrayHead, axis=1)
 
-            # Don't check whether it is false negative
-            rankListHead = [int(np.argwhere(elem[1] == elem[0]) + 1) for elem in zip(self.link_data_sampler.data[:, 0], rankArrayHead)]
-            rankListHead_1 = [np.sum(dist >= dist[n]) for (n, dist) in zip(self.link_data_sampler.data[:, 0], distArrayHead)]
-            pdb.set_trace()
+            # # Don't check whether it is false negative
+            # rankListHead = [int(np.argwhere(elem[1] == elem[0]) + 1) for elem in zip(self.link_data_sampler.data[:, 0], rankArrayHead)]
+            rankListHead = [np.sum(dist < dist[n]) + 1 for (dist, n) in zip(distArrayHead, self.link_data_sampler.data[:, 0])]
             if self.params.filter:
-                rankListHead = [int(self._filter(elem[0], elem[1], elem[2], elem[3], elem[4], h=1))
-                                for elem in zip(self.link_data_sampler.data[:, 0], self.link_data_sampler.data[:, 1],
-                                                self.link_data_sampler.data[:, 2], rankArrayHead, rankListHead)]
+                for i, (head, tail, rel) in enumerate(self.link_data_sampler.data):
+                    heads = self.link_data_sampler.head_mapping[(rel, tail)]
+                    tails = [tail] * len(heads)
+                    rels = [rel] * len(heads)
+
+                    head_emb = self.encoder.ent_emb.data[heads]
+                    tail_emb = self.encoder.ent_emb.data[tails]
+
+                    scores = self.decoder(head_emb, tail_emb, rels)
+                    rankListHead[i] -= np.sum(scores < distArrayHead[head])
 
             isHit10ListHead = [x for x in rankListHead if x <= 10]
 

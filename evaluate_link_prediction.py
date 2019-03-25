@@ -64,5 +64,10 @@ evaluator = Evaluator(params, gcn, distmul, test_data_sampler)
 
 logging.info('Testing models from %s' % os.path.join(params.exp_dir))
 
-log_data = evaluator.get_log_data(params.eval_mode)
-logging.info('Test performance:' + str(log_data))
+tic = time.time()
+trainer.encoder.eval()
+trainer.decoder.eval()
+with torch.no_grad():
+    log_data = evaluator.get_log_data(params.eval_mode)
+toc = time.time()
+logging.info('Test performance: %s in %f' % (str(log_data), (toc - tic)))
