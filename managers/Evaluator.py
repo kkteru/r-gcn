@@ -34,7 +34,7 @@ class Evaluator():
                         head_emb = self.encoder.ent_emb.data[heads]
                         tail_emb = self.encoder.ent_emb.data[tails]
 
-                        scores = self.decoder(head_emb, tail_emb, rels).cpu().numpy()
+                        scores = self.decoder.get_score(head_emb, tail_emb, rels).cpu().numpy()
                         rankListHead[i] -= np.sum(scores < distArrayHead[i][head])
 
             isHit10ListHead = [x for x in rankListHead if x <= 10]
@@ -63,7 +63,7 @@ class Evaluator():
                         head_emb = self.encoder.ent_emb.data[heads]
                         tail_emb = self.encoder.ent_emb.data[tails]
 
-                        scores = self.decoder(head_emb, tail_emb, rels).cpu().numpy()
+                        scores = self.decoder.get_score(head_emb, tail_emb, rels).cpu().numpy()
                         rankListTail[i] -= np.sum(scores < distArrayTail[i][tail])
 
             isHit10ListTail = [x for x in rankListTail if x <= 10]

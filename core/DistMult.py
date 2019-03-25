@@ -27,11 +27,11 @@ class DistMult(nn.Module):
         if mode == 'tail':
             c_e = torch.matmul(h_e.unsqueeze(-2), torch.diag_embed(r_e)).squeeze()  # (B x d)
 
-        distList = torch.sigmoid(torch.matmul(c_e, ent_dict.transpose(0, 1)))  # (B x |E|)
+        distList = torch.matmul(c_e, ent_dict.transpose(0, 1))  # (B x |E|)
 
         return distList
 
-    def forward(self, head_emb, tail_emb, batch_rel):
+    def get_score(self, head_emb, tail_emb, batch_rel):
         '''
         head_emb : (batch_size, d)
         tail_emb : (batch_size, d)
@@ -40,6 +40,17 @@ class DistMult(nn.Module):
         '''
         rels = self.rel_emb[batch_rel]  # (batch_size, d)
 
-        score = torch.sigmoid(torch.matmul(torch.matmul(head_emb.unsqueeze(-1).transpose(1, 2), torch.diag_embed(rels)), tail_emb.unsqueeze(-1))).squeeze()  # (batch_size)
+        score = torch.matmul(torch.matmul(head_emb.unsqueeze(-1).transpose(1, 2), torch.diag_embed(rels)), tail_emb.unsqueeze(-1)).squeeze()  # (batch_size)
+
+        return score
+
+    def forward(self, head_emb, tail_emb, batch_rel):
+        '''
+        head_emb : (batch_size, d)
+        tail_emb : (batch_size, d)
+        batch_rel : (batch_size)
+        ent_emb : (N, d)
+        '''
+        score = torch.sigmoid(get_score(head_emb, tail_emb, batch_rel))  # (batch_size)
 
         return score
