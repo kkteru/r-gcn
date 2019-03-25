@@ -44,15 +44,16 @@ class Evaluator():
             rankListHead = [np.sum(dist < dist[n]) + 1 for (dist, n) in zip(distArrayHead, self.link_data_sampler.data[:, 0])]
             if self.params.filter:
                 for i, (head, tail, rel) in enumerate(self.link_data_sampler.data):
-                    heads = self.link_data_sampler.head_mapping[(rel, tail)]
-                    tails = [tail] * len(heads)
-                    rels = [rel] * len(heads)
+                    if (rel, tail) in self.link_data_sampler.head_mapping:
+                        heads = self.link_data_sampler.head_mapping[(rel, tail)]
+                        tails = [tail] * len(heads)
+                        rels = [rel] * len(heads)
 
-                    head_emb = self.encoder.ent_emb.data[heads]
-                    tail_emb = self.encoder.ent_emb.data[tails]
+                        head_emb = self.encoder.ent_emb.data[heads]
+                        tail_emb = self.encoder.ent_emb.data[tails]
 
-                    scores = self.decoder(head_emb, tail_emb, rels)
-                    rankListHead[i] -= np.sum(scores < distArrayHead[head])
+                        scores = self.decoder(head_emb, tail_emb, rels)
+                        rankListHead[i] -= np.sum(scores < distArrayHead[head])
 
             isHit10ListHead = [x for x in rankListHead if x <= 10]
 
