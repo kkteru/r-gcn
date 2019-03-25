@@ -25,7 +25,7 @@ parser.add_argument("--save_every", type=int, default=50,
                     help="Interval of epochs to save a checkpoint of the model?")
 parser.add_argument('--eval_mode', type=str, default="head",
                     help='Evaluate on head and/or tail prediction?')
-parser.add_argument('--dataset', type=str, default="full",
+parser.add_argument('--dataset', type=str, default="mod",
                     help='Which dataset to use? "full" for FB15K, "mod" for FB15K237')
 parser.add_argument('--filter', action='store_true',
                     help='Filter the samples while evaluation')

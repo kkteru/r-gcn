@@ -16,6 +16,21 @@ def get_torch_sparse_matrix(A, dev):
     return torch.sparse.FloatTensor(idx, dat, torch.Size([A.shape[0], A.shape[1]])).to(device=dev)
 
 
+def extend_triple_dict(self, dictionary, triplets, tail_list=True):
+    for triplet in triplets:
+        if tail_list:
+            key = (triplet[0], triplet[2])
+            value = triplet[1]
+        else:
+            key = (triplet[2], triplet[1])
+            value = triplet[0]
+
+        if key not in dictionary:
+            dictionary[key] = [value]
+        elif value not in dictionary[key]:
+            dictionary[key].append(value)
+
+
 class DataSampler():
     def __init__(self, params, file_path, all_data_path, nBatches=1, debug=False):
         self.params = params
@@ -29,7 +44,12 @@ class DataSampler():
         assert self.all_data.shape[1] == 3
 
         self.data_set = set(map(tuple, self.data))
-        self.all_data_set = set(map(tuple, self.all_data))
+
+        self.tail_mapping = {}
+        self.head_mapping = {}
+        extend_triple_dict(self.tail_mapping, self.all_data, tail_list=True)
+        extend_triple_dict(self.head_mapping, self.all_data, tail_list=False)
+
         self.ent = self.get_ent(self.data)
         self.rel = self.get_rel(self.data)
 

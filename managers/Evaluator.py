@@ -33,10 +33,13 @@ class Evaluator():
             distArrayHead = self.decoder.get_all_scores(self.encoder.ent_emb.data, self.link_data_sampler.data[:, 0],
                                                         self.link_data_sampler.data[:, 1], self.link_data_sampler.data[:, 2],
                                                         'head').cpu().numpy()
+
             rankArrayHead = np.argsort(distArrayHead, axis=1)
 
             # Don't check whether it is false negative
             rankListHead = [int(np.argwhere(elem[1] == elem[0]) + 1) for elem in zip(self.link_data_sampler.data[:, 0], rankArrayHead)]
+            rankListHead_1 = [np.sum(dist >= dist[n]) for (n, dist) in zip(self.link_data_sampler.data[:, 0], distArrayHead)]
+            pdb.set_trace()
             if self.params.filter:
                 rankListHead = [int(self._filter(elem[0], elem[1], elem[2], elem[3], elem[4], h=1))
                                 for elem in zip(self.link_data_sampler.data[:, 0], self.link_data_sampler.data[:, 1],

@@ -11,7 +11,7 @@ logging.basicConfig(level=logging.INFO)
 parser = argparse.ArgumentParser(description='TransE model')
 
 parser.add_argument("--experiment_name", type=str, default="default",
-                    help="The best modeel saved in this folder would be loaded")
+                    help="The best model saved in this folder would be loaded")
 parser.add_argument("--gpu", type=int, default=0,
                     help="Which GPU to use?")
 
