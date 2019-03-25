@@ -16,7 +16,7 @@ def get_torch_sparse_matrix(A, dev):
     return torch.sparse.FloatTensor(idx, dat, torch.Size([A.shape[0], A.shape[1]])).to(device=dev)
 
 
-def extend_triple_dict(self, dictionary, triplets, tail_list=True):
+def extend_triple_dict(dictionary, triplets, tail_list=True):
     for triplet in triplets:
         if tail_list:
             key = (triplet[0], triplet[2])
