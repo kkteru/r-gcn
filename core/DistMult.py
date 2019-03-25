@@ -27,7 +27,7 @@ class DistMult(nn.Module):
         if mode == 'tail':
             c_e = torch.matmul(h_e.unsqueeze(-2), torch.diag_embed(r_e)).squeeze()  # (B x d)
 
-        distList = torch.matmul(c_e, ent_dict.transpose(0, 1))  # (B x |E|)
+        distList = torch.sigmoid(torch.matmul(c_e, ent_dict.transpose(0, 1)))  # (B x |E|)
 
         return distList
 

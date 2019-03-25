@@ -11,7 +11,6 @@ class Evaluator():
         self.params = params
 
     def get_log_data(self, eval_mode='head'):
-        # pdb.set_trace()
 
         mr = []
         mrr = []
