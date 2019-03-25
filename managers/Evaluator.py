@@ -8,21 +8,7 @@ class Evaluator():
         self.decoder = decoder
 
         self.link_data_sampler = link_data_sampler
-        # self.neg_sample_size = neg_sample_size if neg_sample_size != 0 else len(link_data_sampler.data)
         self.params = params
-
-    # Find the rank of ground truth head in the distance array,
-    # If (head, num, rel) in all_data,
-    # skip without counting.
-    def _filter(self, head, tail, rel, array, rank, h):
-        filtered_rank = rank
-        if h == 1:
-            self.link_data_sampler.head_mapping[(rel, tail)]
-
-            # for i in range(rank):
-            #     if (head * (1 - h) + array[i] * h, array[i] * (1 - h) + tail * h, rel) in self.link_data_sampler.all_data:
-            #         filtered_rank = filtered_rank - 1
-            # return filtered_rank
 
     def get_log_data(self, eval_mode='head'):
         # pdb.set_trace()
@@ -37,11 +23,8 @@ class Evaluator():
                                                         self.link_data_sampler.data[:, 1], self.link_data_sampler.data[:, 2],
                                                         'head').cpu().numpy()
 
-            # rankArrayHead = np.argsort(distArrayHead, axis=1)
-
-            # # Don't check whether it is false negative
-            # rankListHead = [int(np.argwhere(elem[1] == elem[0]) + 1) for elem in zip(self.link_data_sampler.data[:, 0], rankArrayHead)]
             rankListHead = [np.sum(dist < dist[n]) + 1 for (dist, n) in zip(distArrayHead, self.link_data_sampler.data[:, 0])]
+
             if self.params.filter:
                 for i, (head, tail, rel) in enumerate(self.link_data_sampler.data):
                     if (rel, tail) in self.link_data_sampler.head_mapping:
@@ -69,14 +52,20 @@ class Evaluator():
             distArrayTail = self.decoder.get_all_scores(self.encoder.ent_emb.data, self.link_data_sampler.data[:, 0],
                                                         self.link_data_sampler.data[:, 1], self.link_data_sampler.data[:, 2],
                                                         'tail').cpu().numpy()
-            rankArrayTail = np.argsort(distArrayTail, axis=1)
+            rankListTail = [np.sum(dist < dist[n]) + 1 for (dist, n) in zip(distArrayTail, self.link_data_sampler.data[:, 1])]
 
-            # Don't check whether it is false negative
-            rankListTail = [int(np.argwhere(elem[1] == elem[0]) + 1) for elem in zip(self.link_data_sampler.data[:, 1], rankArrayTail)]
             if self.params.filter:
-                rankListTail = [int(self._filter(elem[0], elem[1], elem[2], elem[3], elem[4], h=0))
-                                for elem in zip(self.link_data_sampler.data[:, 0], self.link_data_sampler.data[:, 1],
-                                                self.link_data_sampler.data[:, 2], rankArrayTail, rankListTail)]
+                for i, (head, tail, rel) in enumerate(self.link_data_sampler.data):
+                    if (head, rel) in self.link_data_sampler.tail_mapping:
+                        tails = self.link_data_sampler.tail_mapping[(head, rel)]
+                        heads = [head] * len(tails)
+                        rels = [rel] * len(tails)
+
+                        head_emb = self.encoder.ent_emb.data[heads]
+                        tail_emb = self.encoder.ent_emb.data[tails]
+
+                        scores = self.decoder(head_emb, tail_emb, rels).cpu().numpy()
+                        rankListTail[i] -= np.sum(scores < distArrayTail[i][tail])
 
             isHit10ListTail = [x for x in rankListTail if x <= 10]
 
