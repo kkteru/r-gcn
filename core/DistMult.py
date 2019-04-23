@@ -51,6 +51,6 @@ class DistMult(nn.Module):
         batch_rel : (batch_size)
         ent_emb : (N, d)
         '''
-        score = torch.sigmoid(get_score(head_emb, tail_emb, batch_rel))  # (batch_size)
+        score = torch.sigmoid(self.get_score(head_emb, tail_emb, batch_rel))  # (batch_size)
 
         return score

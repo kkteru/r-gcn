@@ -40,7 +40,7 @@ class GCN(nn.Module):
         out = self.node_init
         for layer in self.layers:
             out = layer(out, adj_mat_list)
-            out = F.relu(out)
+            out = F.relu(out)  # Applies to output layer too!
             out = F.normalize(out)
         self.ent_emb = out
         return out
